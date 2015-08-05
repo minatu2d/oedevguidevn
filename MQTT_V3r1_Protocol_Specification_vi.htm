@@ -6,9 +6,9 @@
 </head>
 <body>
 <div><img src="MQTT_V3r1_Protocol_Specification_files/logo.png">
-<h1>MQTT V3.1 Protocol Specification</h1>
+<h1>Đặc tả giao thức MQTT V3.1</h1>
 <dl>
-	<dt>Authors:</dt>
+	<dt>Tác giả:</dt>
 	<dd><a href="http://www.ibm.com/">International Business Machines Corporation (IBM)</a></dd>
 
 	<dd><a href="http://www.eurotech-inc.com/">Eurotech</a></dd>
@@ -16,45 +16,38 @@
 </div>
 
 <div id="abstract">
-<h2>Abstract</h2>
+<h2>Trừu tượng</h2>
 <p>
-MQ Telemetry Transport (MQTT) is a lightweight broker-based 
-publish/subscribe messaging protocol designed to be open, simple, 
-lightweight and easy to implement. These characteristics make it ideal 
-for use in constrained environments, for example, but not limited to:
+MQ Telemetry Transport (MQTT) (tạm dịch là Giao vận tầm xa) là giao thức truyền message theo mô hình cung cấp/thuê bao publish/subcribe. Nó dựa trện một Broker (điểm trung gian) "nhẹ" (khá ít xử lý), và được thiết kế có tính mở 
+(không đăng trưng cho ứng dụng nào), đơn giản, "nhẹ", và dễ để implement. Những đặc trưng này khiến MQTT rất lý tưởng để sử dụng trong các môi trường bị giới hạn tài nguyên như: 
 </p>
 <ul>
-<li>Where the network is expensive, has low bandwidth or is unreliable
-</li><li>When run on an embedded device with limited processor or memory resources
+<li>Những nơi mà giá network đắt hoặc băng thông thấp, hay thiếu tin cậy
+</li><li>Khi chạy trên một thiết bị nhúng bị giới hạn về tài nguyên tốc độ và bộ nhớ
 </li></ul>
 <p>
-Features of the protocol include:
+Các đặc trưng của giao thức bao gồm:
 </p>
 <ul>
-<li>The publish/subscribe message pattern to provide one-to-many message distribution and decoupling of applications</li>
-<li>A messaging transport that is agnostic to the content of the payload</li>
-<li>The use of TCP/IP to provide basic network connectivity</li>
-<li>Three qualities of service for message delivery:
+<li>Dạng truyền message cung cấp/thuê bao (publish/subcribe) cung cấp việc truyền tin phân tán 1-nhiều and tách biệt các ứng dụng</li>
+<li>Việc truyền message là luôn không quan tâm đến nội dung nó truyền/li>
+<li>Dựa trên nền TCP/IP để cung cấp đừong truyền</li>
+<li>Có 3 loại QoS được đưa ra:
 <ul>
-<li>"At most once", where messages are delivered according to the best 
-efforts of the underlying TCP/IP network. Message loss or duplication 
-can occur. This level could be used, for example, with ambient sensor 
-data where it does not matter if an individual reading is lost as the 
-next one will be published soon after.</li>
-<li>"At least once", where messages are assured to arrive but duplicates may occur.</li>
-<li>"Exactly once", where message are assured to arrive exactly once. 
-This level could be used, for example, with billing systems where 
-duplicate or lost messages could lead to incorrect charges being 
-applied.</li>
+<li>"Hầu như chỉ 1 lần ", message được truyền nhận dựa hoàn toàn vào tính tin cận của TCP/IP. Việc mất hoặc lặp message có thể xảy ra. Ở QoS này, có thể ví dụ 1 trường hợp sử dụng: như trong môi trừong sensor mà việc mất 1 gói dữ liệu tại 1 thời điểm không ảnh hưởng đến toàn bộ quá trình.
+</li>
+<li>"Ít nhất 1 lần", các message được đảm bảo nhận được nhưng có thể xảy ra lặp</li>
+<li>"Chính xác chỉ 1 lần", message được đảm bảo đến nơi đúng 1 lần. Ở level này, các hệ thống thanh toán, nơi mà việc lặp hay mất message có thể gây ra việc tính tiền bị sai. 
+</li>
 </ul>
 </li>
-<li>A small transport overhead (the fixed-length header is just 2 bytes), and protocol exchanges minimised to reduce network traffic</li>
-<li>A mechanism to notify interested parties to an abnormal disconnection of a client using the Last Will and Testament feature</li>
+<li>Dữ liệu bao bọc dữ liệu truyền (overhead) nhỏ (độ dài cố định luôn là 2 byte), and là gia thức giảm đến mức tối thiểu traffic đường truyền. </li>
+<li>Một cơ chế để thông báo đến các thuê bao khi đường truyền bị đứt bất thường, sử dụng Last Will và Testament feature.</li>
 </ul>
 </div>
 <div id="copyright">
 <h2>Copyright Notice</h2>
-<p>� 1999-2010 Eurotech, International Business Machines Corporation (IBM). All rights reserved.</p>
+<p>© 1999-2010 Eurotech, International Business Machines Corporation (IBM). All rights reserved.</p>
 <p>Permission to copy and display the MQ Telemetry Transport 
 specification (the "Specification"), in any medium without fee or 
 royalty is hereby granted by Eurotech and International Business 
@@ -93,25 +86,25 @@ Authors.
 
 
 <div id="toc">
-<h2>Table of Contents</h2>
+<h2>Mục lục</h2>
 <ul class="toc">
-	<li><a href="#intro">1. Introduction</a>
+	<li><a href="#intro">1. Giới thiệu</a>
 
 		<ul>
-			<li><a href="#new">1.1. Changes</a></li>
+			<li><a href="#new">1.1. Thay đổi mới</a></li>
 		</ul>
 	</li>
-	<li><a href="#msg-format">2. Message format</a>
+	<li><a href="#msg-format">2. Định dạng của message</a>
 	<ul>
-		<li><a href="#fixed-header">2.1. Fixed header</a></li>
+		<li><a href="#fixed-header">2.1. Header độ dài cố định</a></li>
 
-		<li><a href="#variable-header">2.2. Variable header</a></li>
-		<li><a href="#payload">2.3. Payload</a></li>
-		<li><a href="#msg-id">2.4. Message identifiers</a></li>
+		<li><a href="#variable-header">2.2. Header độ dài thay đổi</a></li>
+		<li><a href="#payload">2.3. Dữ liệu chính (payload)</a></li>
+		<li><a href="#msg-id">2.4. Phân loại message</a></li>
 		<li><a href="#utf-8">2.5. MQTT and UTF-8</a></li>
 	</ul>
 	</li>
-	<li><a href="#commands">3. Command messages</a>
+	<li><a href="#commands">3. Các message command</a>
 
 	<ul>
 		<li><a href="#connect">3.1. CONNECT</a></li>
@@ -145,22 +138,22 @@ Authors.
 
 <div id="main">
 <div id="intro">
-<h1>1. Introduction</h1>
-<p>This specification is split into three main sections:
+<h1>1. Giới thiệu</h1>
+<p>Tài liệu đặc tả này được chia làm 3 chương chính:
 </p>
-<ul><li>the message format that is common to all packet types,</li>
-<li>the specific details of each packet type,</li>
-<li>how the packets flow between client and server.</li>
+<ul><li>Định dạng message cho tất cả các packet</li>
+<li>Chi tiết mỗi loại packet</li>
+<li>Luồng gói tin giữa client và server</li>
 </ul>
 <p>
-Information on how topic wildcards are used is provided in the appendix.
+Thông tin về cách mô tả mỗi topic (1 nhóm các tin nhắn) được cung cấp ở phần appendix.
 </p>
 
 <div id="new">
-<h2>1.1. Changes</h2>
-<p>The following are the changes between MQTT V3 and MQTT V3.1:</p>
+<h2>1.1. Thay đổi mới</h2>
+<p>Sự thay đổi từ MQTT V3 đến MQTT V3.1:</p>
 <ul>
-	<li>User name and password can now be sent with a CONNECT packet</li>
+	<li>User và password giờ được gửi qua một gói CONNECT</li>
 	<li>New return codes on CONNACK packets, for security problems</li>
 	<li>Clarification that clients are not informed of un-authorized
 	PUBLISH or SUBSCRIBE commands, and that the normal MQTT flow should
