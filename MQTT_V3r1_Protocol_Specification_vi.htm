@@ -154,31 +154,20 @@ Thông tin về cách mô tả mỗi topic (1 nhóm các tin nhắn) được cu
 <p>Sự thay đổi từ MQTT V3 đến MQTT V3.1:</p>
 <ul>
 	<li>User và password giờ được gửi qua một gói CONNECT</li>
-	<li>New return codes on CONNACK packets, for security problems</li>
-	<li>Clarification that clients are not informed of un-authorized
-	PUBLISH or SUBSCRIBE commands, and that the normal MQTT flow should
-	complete even though the command has not been performed.</li>
+	<li>Thêm mã trả về cho packet CONNACK để sử dụng cho mục đích security</li>
+	<li>Client sẽ không được cho biết về việc các gói chứa command PUBLISH hoặc SUBCRIBE không được xác thực. Một luồng MQTT thông thường sẽ kết thúc thậm chí những command này không được thực hiện. </li>
 
-	<li>Strings in MQTT now support full UTF-8, instead of just the US-ASCII
-	subset.</li>
+	<li>String trong MQTT bây giờ hỗ trợ cả UTF8 thay vì chỉ tập nhỏ ASCII.</li>
 </ul>
-<p>The protocol version number passed with CONNECT packets, is unchanged for
-this revision, and remains as the "3".  Existing MQTT V3 server implementations 
-should be able to accept connections from clients that support this revision, as
-long as they correctly respect the "Remaining Length" field, and therefore ignore
-the extra security information.</p>
+<p>Số version của protocol sẽ có trong gói CONNECT, và trong phiên bản V3r1 này sẽ là 3. Những thực thi MQTT V3 có thể chấp nhận kết nối đến từ version này với độ dài mong muốn vả bỏ quả các thông tin security khác.</p>
 </div>
 </div>
 <!--  ===================================================================== -->
 <div id="message-format">
-<h1 id="msg-format">2. Message format</h1>
-<p>The message header for each MQTT command message contains a fixed
-header. Some messages also require a variable header and a payload. The
-format for each part of the message header is described in the following
-sections:</p>
-<h2 id="fixed-header">2.1. Fixed header</h2>
-<p>The message header for each MQTT command message contains a fixed
-header. The table below shows the fixed header format.</p>
+<h1 id="msg-format">2. Định dạng của message</h1>
+<p>Phần header cho mỗi message của MQTT command luôn chưa 1 phần độ dài cố đinh. Một số message cũng chứa phần độ dài thay đổi được header và dữ liệu truyền đi. Định dạng của mỗi message header được miêu tả trong các section sau:</p>
+<h2 id="fixed-header">2.1. Phần header cố định</h2>
+<p>Tất cả các message luôn chứa phần cố định dưới đây:</p>
 
 <table class="bits">
 	<thead>
@@ -199,15 +188,15 @@ header. The table below shows the fixed header format.</p>
 	<tbody>
 		<tr>
 			<td>byte 1</td>
-			<td colspan="4" align="center">Message Type</td>
-			<td>DUP flag</td>
+			<td colspan="4" align="center">Loại Message</td>
+			<td>Cờ DUP</td>
 			<td colspan="2" align="center">QoS level</td>
 
 			<td>RETAIN</td>
 		</tr>
 		<tr>
 			<td>byte 2</td>
-			<td colspan="8" align="center">Remaining Length</td>
+			<td colspan="8" align="center">Độ dài còn lại</td>
 		</tr>
 	</tbody>
 
@@ -216,35 +205,31 @@ header. The table below shows the fixed header format.</p>
 
 	<dt>Byte 1</dt>
 	<dd>
-	<p>Contains the Message Type and Flags (DUP, QoS level, and RETAIN)
-	fields.</p>
+	<p>Chứa loại Message và các cờ (DUP, QoS level, and RETAIN).</p>
 	</dd>
 
 
 	<dt>Byte 2</dt>
 
 	<dd>
-	<p>(At least one byte) contains the Remaining Length field.</p>
+	<p>(Ít nhất 1 byte) quy định độ dài còn lại</p>
 	</dd>
 
 </dl>
-<p>The fields are described in the following sections. All data
-values are in big-endian order: higher order bytes precede lower order
-bytes. A 16-bit word is presented on the wire as Most Significant Byte
-(MSB), followed by Least Significant Byte (LSB).</p>
+<p>Trường này sẽ được nói đến kĩ hơn. Tất cả dữ liệu là big-endian order: Byte cao sẽ đứng trước byte thấp. Một word 16 bit sẽ được truyền trên dây thành 1 byte Most Significant
+(MSB), theo là byte Least Significant(LSB).</p>
 
 
-<h3>Message Type</h3>
-<b>Position:</b> byte 1, bits 7-4.
+<h3>Loại Message</h3>
+<b>Vị trí:</b> byte 1, bits 7-4.
 
-<p>Represented as a 4-bit unsigned value. The enumerations for this
-version of the protocol are shown in the table below.</p>
+<p>Một số 4-bit không dấu diễn tả các giá trị được miêu tả dưới bảng sau:</p>
 <table>
 	<thead>
 		<tr>
-			<th>Mnemonic</th>
-			<th align="center">Enumeration</th>
-			<th>Description</th>
+			<th>Từ gợi nhớ</th>
+			<th align="center">Giá trị thứ tự</th>
+			<th>Miêu tả</th>
 		</tr>
 
 	</thead>
@@ -252,87 +237,87 @@ version of the protocol are shown in the table below.</p>
 		<tr>
 			<td>Reserved</td>
 			<td align="center">0</td>
-			<td>Reserved</td>
+			<td>Chưa dùng</td>
 		</tr>
 
 		<tr>
 			<td>CONNECT</td>
 			<td align="center">1</td>
-			<td>Client request to connect to Server</td>
+			<td>Client yêu cầu kết nối đến Server</td>
 		</tr>
 		<tr>
 			<td>CONNACK</td>
 
 			<td align="center">2</td>
-			<td>Connect Acknowledgment</td>
+			<td>Kết nối được chấp nhận</td>
 		</tr>
 		<tr>
 			<td>PUBLISH</td>
 			<td align="center">3</td>
-			<td>Publish message</td>
+			<td>Xuất bản message</td>
 
 		</tr>
 		<tr>
 			<td>PUBACK</td>
 			<td align="center">4</td>
-			<td>Publish Acknowledgment</td>
+			<td>Xuất bản message được chấp nhận</td>
 		</tr>
 		<tr>
 
 			<td>PUBREC</td>
 			<td align="center">5</td>
-			<td>Publish Received (assured delivery part 1)</td>
+			<td>Xuất bản đã được nhận (đảm bảo nhận được part 1)</td>
 		</tr>
 		<tr>
 			<td>PUBREL</td>
 			<td align="center">6</td>
 
-			<td>Publish Release (assured delivery part 2)</td>
+			<td>Xuất bản release (đảm bảo nhận được part 2)</td>
 		</tr>
 		<tr>
 			<td>PUBCOMP</td>
 			<td align="center">7</td>
-			<td>Publish Complete (assured delivery part 3)</td>
+			<td>Xuất bản hoàn thành (đảm bảo nhận được part 3)</td>
 		</tr>
 
 		<tr>
 			<td>SUBSCRIBE</td>
 			<td align="center">8</td>
-			<td>Client Subscribe request</td>
+			<td>Yêu cầu subcribe từ client</td>
 		</tr>
 		<tr>
 			<td>SUBACK</td>
 
 			<td align="center">9</td>
-			<td>Subscribe Acknowledgment</td>
+			<td>Yêu cầu subcriber được chấp nhận</td>
 		</tr>
 		<tr>
 			<td>UNSUBSCRIBE</td>
 			<td align="center">10</td>
-			<td>Client Unsubscribe request</td>
+			<td>Yêu cầu unsubcribe</td>
 
 		</tr>
 		<tr>
 			<td>UNSUBACK</td>
 			<td align="center">11</td>
-			<td>Unsubscribe Acknowledgment</td>
+			<td>Yêu cầu unsubcribe được chấp nhận</td>
 		</tr>
 		<tr>
 
 			<td>PINGREQ</td>
 			<td align="center">12</td>
-			<td>PING Request</td>
+			<td>Request PING </td>
 		</tr>
 		<tr>
 			<td>PINGRESP</td>
 			<td align="center">13</td>
 
-			<td>PING Response</td>
+			<td>Response PING</td>
 		</tr>
 		<tr>
 			<td>DISCONNECT</td>
 			<td align="center">14</td>
-			<td>Client is Disconnecting</td>
+			<td>Client đang mất kết nối</td>
 		</tr>
 
 		<tr>
@@ -343,16 +328,14 @@ version of the protocol are shown in the table below.</p>
 	</tbody>
 </table>
 
-<h3>Flags</h3>
-<p>The remaining bits of byte 1 contain the fields DUP, QoS, and
-RETAIN. The bit positions are encoded to represent the flags as shown in
-the table below.</p>
+<h3>Các cờ</h3>
+<p>Bit còn lại của byte đầu chứa các trường DUP, QoS và RETAIN. Vị trí các bit và ý nghĩa được miêu tả trong bảng dưới đây.</p>
 <table>
 	<thead>
 		<tr>
-			<th>Bit position</th>
-			<th>Name</th>
-			<th>Description</th>
+			<th>Vị trí bit</th>
+			<th>Tên viết gọn</th>
+			<th>Miêu tả</th>
 
 		</tr>
 	</thead>
@@ -360,19 +343,19 @@ the table below.</p>
 		<tr>
 			<td>3</td>
 			<td>DUP</td>
-			<td>Duplicate delivery</td>
+			<td>Nhận lặp lại</td>
 
 		</tr>
 		<tr>
 			<td>2-1</td>
 			<td>QoS</td>
-			<td>Quality of Service</td>
+			<td>Quality of Service (chất lượng dịch vụ)</td>
 		</tr>
 		<tr>
 
 			<td>0</td>
 			<td>RETAIN</td>
-			<td>RETAIN flag</td>
+			<td>cờ RETAIN</td>
 		</tr>
 	</tbody>
 </table>
@@ -381,32 +364,25 @@ the table below.</p>
 	<dt id="dup-flag">DUP</dt>
 
 	<dd>
-	<p><b>Position:</b> byte 1, bit 3.</p>
-	<p>This flag is set when the client or server attempts to
-	re-deliver a <a href="#publish">PUBLISH</a>, <a href="#pubrel">PUBREL</a>,
-   <a href="#subscribe">SUBSCRIBE</a> or <a href="#unsubscribe">UNSUBSCRIBE</a> message. This applies to
-	messages where the value of QoS is greater than zero (0), and an
-	acknowledgment is required. When the DUP bit is set, the variable
-	header includes a Message ID.</p>
-   <p>The recipient should treat this flag as a hint as to whether
-   the message may have been previously received. It should not be relied
-   on to detect duplicates.</p>
+	<p><b>Vị trí:</b> byte 1, bit 3.</p>
+	<p>Cờ này được bật khi client hoặc server đang cố chuyển lại một gói <a href="#publish">PUBLISH</a>, <a href="#pubrel">PUBREL</a>,
+   <a href="#subscribe">SUBSCRIBE</a> or <a href="#unsubscribe">UNSUBSCRIBE</a>. Giá trị này được sử dụng trong các mesage mà có QoSS lớn hơn 0 và yêu cầu ACK. Khi bit DUP được set, phần header thay đổi sẽ chưa Message ID.</p>
+   <p>Nhìn vào giá trị này sẽ biết được gói tin đã nhận được trước đó hay không. Nó không nên sử dụng để tin ngay rằng có duplicates hay không. </p>
 	</dd>
 
 
 	<dt id="qos-flag">QoS</dt>
 	<dd>
-	<p><b>Position:</b> byte 1, bits 2-1.</p>
-	<p>This flag indicates the level of assurance for delivery of a <a href="#publish">PUBLISH</a> message. The QoS levels are shown in the
-	table below.</p>
+	<p><b>Vị trí:</b> byte 1, bits 2-1.</p>
+	<p>Cờ này sẽ cho biết độ đảm bảo việc nhận message<a href="#publish">PUBLISH</a>. Giá trị của QoS được miêu tả trong bảng dưới đây.</p>
 	<table>
 
 		<thead>
 			<tr>
-				<th>QoS value</th>
+				<th>Giá trị QoS</th>
 				<th>bit 2</th>
 				<th>bit 1</th>
-				<th colspan="3" align="left">Description</th>
+				<th colspan="3" align="left">Miêu tả</th>
 			</tr>
 
 		</thead>
@@ -415,9 +391,9 @@ the table below.</p>
 				<td align="center">0</td>
 				<td>0</td>
 				<td>0</td>
-				<td>At most once</td>
+				<td>Cùng lắm là 1 lần</td>
 
-				<td>Fire and Forget</td>
+				<td>Gửi rồi quên ngay</td>
 				<td>&lt;=1</td>
 			</tr>
 			<tr>
@@ -425,8 +401,8 @@ the table below.</p>
 				<td>0</td>
 				<td>1</td>
 
-				<td>At least once</td>
-				<td>Acknowledged delivery</td>
+				<td>Ít nhất 1 lần</td>
+				<td>Xác nhận bằng ACK</td>
 				<td>&gt;=1</td>
 			</tr>
 			<tr>
@@ -434,8 +410,8 @@ the table below.</p>
 				<td>1</td>
 
 				<td>0</td>
-				<td>Exactly once</td>
-				<td>Assured delivery</td>
+				<td>Chính xác 1 lần</td>
+				<td>Nhận đảm bảo</td>
 				<td>=1</td>
 			</tr>
 			<tr>
@@ -443,7 +419,7 @@ the table below.</p>
 
 				<td>1</td>
 				<td>1</td>
-				<td colspan="3">Reserved</td>
+				<td colspan="3">Chưa dùng</td>
 			</tr>
 		</tbody>
 	</table>
@@ -452,18 +428,13 @@ the table below.</p>
 
 	<dt id="retain-flag">RETAIN</dt>
 	<dd>
-	<p><b>Position:</b> byte 1, bit 0.</p>
-	<p>This flag is only used on <a href="#publish">PUBLISH</a> messages.
-   When a client sends a PUBLISH to a server, if the Retain flag is set (1), the server
-   should hold on to the message after it has been delivered to the current subscribers.</p>
-   <p>When a new subscription is established on a topic, the last retained message
-   on that topic should be sent to the subscriber with the Retain flag set. If there is no retained message,
-   nothing is sent</p>
-   <p>This is useful where	publishers send messages on a "report by exception" basis,
-   where it might	be some time between messages. This allows new subscribers to instantly receive data
-   with the retained, or Last Known Good, value.</p>
-   <p>When a server sends a PUBLISH to a client as a result of a subscription
-   that already existed when the original PUBLISH arrived, the Retain flag should not be set, regardless
+	<p><b>Vị trí:</b> byte 1, bit 0.</p>
+	<p>Cờ này chỉ được sử dụng ở message <a href="#publish">PUBLISH</a>.
+   Khi client gửi 1 message PUBLISH đến server, nếu cờ Retain được set (1), thì server phải hiểu rằng nên giữ message này ngay cả sau khi chuyển nó đến các subcribers hiện tại</p>
+   <p>Khi có 1 subcription mới được thiết lập trên 1 topic, message cuối cùng của topic đó nên được gửi đến subscriber với 1 trường Retain được set trong header. Nếu không có messsage nào còn, thì không cần gửi gì hết.</p>
+   <p>Trường này sẽ có ích khi publisher gửi message để báo "report bằng ngoại lệ" ,
+   thỉnh thoảng là nơi giữa các message. Điều này cho phép những subcribers mới nhanh chóng nhận dữ cần thiết, hoặc giá trị kiểu Cuối là ngon.</p>
+   <p>Khi một server gửi một  message PUBLISH đến 1 client PUBLISH arrived, the Retain flag should not be set, regardless
    of the Retain flag of the original PUBLISH. This allows a client to distinguish messages that
    are being received because they were retained and those that are being received "live".</p>
    <p>Retained messages should be kept over restarts of the server.</p>
