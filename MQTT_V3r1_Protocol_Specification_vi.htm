@@ -433,46 +433,31 @@ Thông tin về cách mô tả mỗi topic (1 nhóm các tin nhắn) được cu
    Khi client gửi 1 message PUBLISH đến server, nếu cờ Retain được set (1), thì server phải hiểu rằng nên giữ message này ngay cả sau khi chuyển nó đến các subcribers hiện tại</p>
    <p>Khi có 1 subcription mới được thiết lập trên 1 topic, message cuối cùng của topic đó nên được gửi đến subscriber với 1 trường Retain được set trong header. Nếu không có messsage nào còn, thì không cần gửi gì hết.</p>
    <p>Trường này sẽ có ích khi publisher gửi message để báo "report bằng ngoại lệ" ,
-   thỉnh thoảng là nơi giữa các message. Điều này cho phép những subcribers mới nhanh chóng nhận dữ cần thiết, hoặc giá trị kiểu Cuối là ngon.</p>
-   <p>Khi một server gửi một  message PUBLISH đến 1 client PUBLISH arrived, the Retain flag should not be set, regardless
-   of the Retain flag of the original PUBLISH. This allows a client to distinguish messages that
-   are being received because they were retained and those that are being received "live".</p>
-   <p>Retained messages should be kept over restarts of the server.</p>
-	<p>A server may delete a retained message if it receives a message with
-	a zero-length payload and the Retain flag set on the same topic.</p>
+   thỉnh thoảng là nơi giữa các message. Điều này cho phép những subcribers mới nhanh chóng nhận dữ cần thiết, hoặc giá trị kiểu Méo mó có hơn không.</p>
+   <p>Trường hợp mà server chuyển tiếp nội dung vừa nhận được từ một Publisher thì trường Retain sẽ không được set. Điều này sẽ giúp phân biệt được message có từ trước với message mới được publish lên.</p>
+   <p>Message Retained sẽ được giữ thậm chí sau khi restart lại server</p>
+	<p>Server sẽ xóa message được retained nếu nó nhận đựoc một message với payload bằng zero.</p>
 	
 	</dd>
 
 </dl>
 
 
-<h3>Remaining Length</h3>
-<p><b>Position:</b> byte 2.</p>
+<h3>Độ dài còn lại</h3>
+<p><b>Vị trí:</b> byte 2.</p>
 
-<p>Represents the number of bytes remaining within the current
-message, including data in the variable header and the payload.</p>
-<p>The variable length encoding scheme uses a single byte for
-messages up to 127 bytes long. Longer messages are handled as follows.
-Seven bits of each byte encode the Remaining Length data, and the eighth
-bit indicates any following bytes in the representation. Each byte
-encodes 128 values and a "continuation bit". For example, the number 64
-decimal is encoded as a single byte, decimal value 64, hex 0x40. The number
-321 decimal (= 65 + 2*128) is encoded as two bytes, least significant first.
-The first byte 65+128 = 193. Note that the top bit is set to indicate at least
- one following byte. The second byte is 2.</p>
-<p>The protocol limits the number of bytes in the representation to
-a maximum of four. This allows applications to send messages of up to
-268&nbsp;435&nbsp;455 (256&nbsp;MB). The representation of this number
-on the wire is: 0xFF, 0xFF, 0xFF, 0x7F.</p>
-<p>The table below shows the Remaining Length values represented by
-increasing numbers of bytes.</p>
+<p>Miêu tả độ dài bao gồm cả phần header và payload có trong message</p>
+<p>Việc encoding với độ dài thay đổi sử dụng 1 byte để miêu tả độ dài, vì thế độ dài tối đa sẽ là 127. Những message dài hơn sẽ được miêu tả theo cách sau.
+7 bít được dùng để miêu tả giá trị, bít còn lại dùng để miêu tả phía sau còn byte nào miêu tả trường này hay không. Mỗi byte tiếp sau đó cũng như vậy 7 bit để lưu giá trị, 1 bít gọi là bit tiếp tục. Giá trị được tính bằng cách nhân giá trị được diên tả bởi 7 bit và lũy thừa tăng dần của 128. Ví dụ miêu tả độ Remain Length = 64, ta chỉ cần 1 byte, trong đó 7 bytes để miêu tả giá trị 64, 1 bit còn lại bằng 0. Một ví dụ nữa, giá trị là 321 chẳng hạn 321 = 65*128^0 + 2* 128^1, ta cần 2 byte để biểu diễn. Byte đầu chứa giá trị 65 trong 7 bit và bit còn lại là 1. Byte thứ 2 chứa giá trị 2 ở 7 bit và 1 bit chứa giá trị bằng 0.</p>
+<p>Trường này được biểu diễn tối đa trong 4 byte. Tức là cho độ dài cho phép sẽ là đến 268 435 455 (256 MB)</p>
+<p>Bảng sau miêu tả độ dài có thể biểu diễn với các số byte tương ứng.</p>
 <table>
 	<thead>
 		<tr>
-			<th>Digits</th>
+			<th>Số byte</th>
 
-			<th>From</th>
-			<th>To</th>
+			<th>Độ dài min</th>
+			<th>Độ dài max</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -502,23 +487,21 @@ increasing numbers of bytes.</p>
 
 	</tbody>
 </table>
-<p>The algorithm for encoding a decimal number (X) into the variable
-length encoding scheme is as follows:</p>
+<p>Thuật toán để chuyển giá trị ở hệ cơ số 10 sang sạng  encode này được miêu tả bằng mã giả sau:</p>
 <code class="block">do
   digit = X MOD 128
   X = X DIV 128
-  // if there are more digits to encode, set the top bit of this digit
+  // Nếu cần nhiều byte hơn để encoding
   if ( X &gt; 0 )
     digit = digit OR 0x80
   endif
   'output' digit
 while ( X&gt; 0 )</code>
-<p>where <code>MOD</code> is the modulo operator (<code>%</code> in
-C), <code>DIV</code> is integer division (<code>/</code> in C), and <code>OR</code>
+<p>Ở đây, <code>MOD</code> là phép toán lấy phần dư (<code>%</code> in
+C), <code>DIV</code> trong số nguyên (<code>/</code> in C), và <code>OR</code>
 
-is bit-wise or (<code>|</code> in C).</p>
-<p>The algorithm for decoding the Remaining Length field is as
-follows:</p>
+phép HOẶC bít hay (<code>|</code> trong C).</p>
+<p>Thuật toán để decoding dãy byte ra giá trị thập phân ban đầu:</p>
 <code class="block">multiplier = 1 
 value = 0 
 do 
@@ -526,31 +509,23 @@ do
   value += (digit AND 127) * multiplier 
   multiplier *= 128
 while ((digit AND 128) != 0)</code>
-<p>where <code>AND</code> is the bit-wise and operator (<code>&amp;</code>
+<p>Ở đây<code>AND</code> là phép VÀ bit (<code>&amp;</code>
 in C).</p>
-<p>When this algorithm terminates, <code>value</code> contains the
-Remaining Length in bytes.</p>
+<p>Khi thuật toán kết thúc, <code>giá trị còn lại trong </code> contains the
+bytes là Remaining Length </p>
 
-<p class="tip">Remaining Length encoding is not part of the variable
-header. The number of bytes used to encode the Remaining Length does not
-contribute to the value of the Remaining Length. The variable length
-"extension bytes" are part of the fixed header, not the variable header.</p>
+<p class="tip">Phần encoding của Remaining Length không phải là một phần của header. Số byte dùng để Encoding không được biết trong giá trị trường Remaining Length. Phần quy định có độ dài có thể thay đổi nằm ở Header, còn phần thay đổi thì không phải một phần của header.</p>
 
 
-<h2 id="variable-header">2.2. Variable header</h2>
-<p>Some types of MQTT command messages also contain a variable header component.
-It resides between the fixed header and the payload.</p>
-<p class="tip">The variable length Remaining Length field is not
-part of the variable header. The bytes of the Remaining Length field do
-not contribute to the byte count of the Remaining Length value. This
-value only takes account of the variable header and the payload. See <a href="#fixed-header">Fixed header</a> for more information.</p>
-<p>The format of the variable header fields are described in the
-following sections, in the order in which they must appear in the header:</p>
+<h2 id="variable-header">2.2. Header có độ dài thay đổi được</h2>
+<p>Một vài loại MQTT message cũng chưa những phần có đội dài thay đổi được. Nó nằm giữa phần header cố định và phần payload.</p>
+<p class="tip">Phẩn thay đổi được của Remaining Length sẽ không nằm ở phần header thay đổi được.  Phần byte thay đổi đựoc của Remaining Length thuộc về phần header và payload, xem <a href="#fixed-header">Fixed header</a> để biết thêm chi tiết.</p>
+<p>Định dạnh của các trường thay đổi được trong header đuợc miêu tả bên dưới đây:</p>
 
 
 <h3>Protocol name</h3>
-<p>The protocol name is present in the variable header of a MQTT
-<a href="#connect">CONNECT</a> message. This field is a UTF-encoded string that represents the
+<p>Xuất hiện trong message
+<a href="#connect">CONNECT</a>. This field is a UTF-encoded string that represents the
 protocol name MQIsdp, capitalized as shown.</p>
 
 
