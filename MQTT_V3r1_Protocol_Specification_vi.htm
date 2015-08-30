@@ -836,36 +836,22 @@ ngoài ra nó, sẽ bị bỏ qua. Nếu cờ Password được set, thì trư�
 		</tr>
 	</tbody>
 </table>
-<p>Bit 0 of this byte is not used in the current version
-of the protocol. It is reserved for future use.</p>
+<p>Bit 0 chưa được sử dụng trong phiên bản này của protocol. Nó có thể được sử dụng trong tương lai.</p>
 
 <h3 id="keep-alive-timer">Keep Alive timer</h3>
 <p>The Keep Alive timer được chứa bên trong phần header thay đổi được của message
 <a href="#connect">CONNECT</a> .</p>
-<p>The Keep Alive timer,  được tính bằng second, định nghĩa interval time lớn nhất giữa các message nhận từ client. Trường này giúp server phát hiện được . The client has a
-responsibility to send a message within each Keep Alive time period. In
-the absence of a data-related message during the time period, the client
-sends a <a href="#pingreq">PINGREQ</a> message, which the server acknowledges with a 
-<a href="#pingresp">PINGRESP</a> message.</p>
-<p>If the server does not receive a message from the client within
-one and a half times the Keep Alive time period (the client is allowed
-"grace" of half a time period), it disconnects the client as if the
-client had sent a <a href="#disconnect">DISCONNECT</a> message. This 
-action does not impact any of the client's subscriptions. See 
-<a href="#disconnect">DISCONNECT</a> for more details.</p>
-<p>If a client does not receive a <a href="#pingresp">PINGRESP</a>
-message within a Keep Alive time period after sending a <a href="#pingreq">PINGREQ</a>,
-it should close the TCP/IP socket connection.</p>
+<p>The Keep Alive timer,  được tính bằng second, định nghĩa interval time lớn nhất giữa các message nhận từ client. Trường này giúp server phát hiện được khi nào kết nối đến client bị đứt mà không cần phải đợi TCP/IP timeout. Client có trách nhiệm gửi 1 message trong mỗi chu kì Keep Alive. Khi không xuất hiện các message liên quan đến Data trong chu kì này thì client phải gửi một message <a href="#pingreq">PINGREQ</a> , và khi đó server sẽ trả lời bằng message
+<a href="#pingresp">PINGRESP</a>.</p>
+<p>Nếu server không nhận được message trong vòng 1.5 chu kì của Keep Alive (clients sẽ được "ân hạn" thêm một nửa chu kì), Nó sẽ disconnect với clients như là khi client gửi message <a href="#disconnect">DISCONNECT</a>. Hành động này không ảnh hưởng đến bất kì subscriptions nào của client. Xem thêm về 
+<a href="#disconnect">DISCONNECT</a> để biết thêm chi tiết.</p>
+<p>Nếu client không nhận được message <a href="#pingresp">PINGRESP</a>
+trong khoảng 1 chu kì Keep Alive sau khi gửi một message <a href="#pingreq">PINGREQ</a>,
+thì nó nên đóng kết nối TCP/IP lại.</p>
 
 
-<p>The Keep Alive timer is a 16-bit value that represents the number
-of seconds for the time period. The actual value is
-application-specific, but a typical value is a few minutes. The maximum
-value is approximately 18 hours. A value of zero (0) means the client is
-not disconnected.</p>
-<p>The format of the Keep Alive timer is shown in the table below.
-The ordering of the 2 bytes of the Keep Alive Timer is MSB, then LSB
-(big-endian).</p>
+<p>Keep Alive timer là một giá trị 16 bit biểu diễn số second của chu kì này. Giá trị khi sử dụng sẽ phụ thuộc vào ứng dụng, nó thường là vãi phút. Giá trị lớn nhất có thể là 18 giờ. Nếu giá trị này là Zero, có nghĩa là client không bị mất kết nối. </p>
+<p>Định dạng của Keep Alive được chỉ ra dưới bảng sau. Thứ tự byte là byte cao trước(MSB), byte thấp sau(LSB).</p>
 
 <table class="bits">
 	<thead>
@@ -898,18 +884,16 @@ The ordering of the 2 bytes of the Keep Alive Timer is MSB, then LSB
 
 
 <h3>Connect return code</h3>
-<p>The connect return code is sent in the variable header of a
+<p>Mã kết nối được trả về được gửi trong phần header thay đổi được của message
 <a href="#connack">CONNACK</a> message.</p>
-<p>This field defines a one byte unsigned return code. The meanings
-of the values, shown in the tables below, are specific to the message
-type. A return code of zero (0) usually indicates success.</p>
+<p>Trường này định nghĩa một bở một byte có giá trị >=0. Ý nghĩa của mỗi giá trị được miêu tả trong bảng bên dưới. Tuy giá trị trả về có ý nghĩa thay đổi theo từng loại message. Thông thường, trả về 0 có nghĩa là success. </p>
 <table>
 
 	<thead>
 		<tr>
-			<td>Enumeration</td>
+			<td>Thứ tự</td>
 			<td>HEX</td>
-			<td>Meaning</td>
+			<td>Ý nghĩa</td>
 		</tr>
 	</thead>
 
@@ -917,41 +901,41 @@ type. A return code of zero (0) usually indicates success.</p>
 		<tr>
 			<td>0</td>
 			<td>0x00</td>
-			<td>Connection Accepted</td>
+			<td>Kết nối được chấp nhận.</td>
 		</tr>
 		<tr>
 
 			<td>1</td>
 			<td>0x01</td>
-			<td>Connection Refused: unacceptable protocol version</td>
+			<td>Kết nối bị từ chối : phiên bản của protocol không được chấp nhận. </td>
 		</tr>
 		<tr>
 			<td>2</td>
 			<td>0x02</td>
 
-			<td>Connection Refused: identifier rejected</td>
+			<td>Kết nối bị từ chối: identifier bị bỏ, hay không hợp lệ</td>
 		</tr>
 		<tr>
 			<td>3</td>
 			<td>0x03</td>
-			<td>Connection Refused: server unavailable</td>
+			<td>Kết nối bị từ chối: server không sẵn sàng</td>
 		</tr>
 
 		<tr>
 			<td>4</td>
 			<td>0x04</td>
-			<td>Connection Refused: bad user name or password</td>
+			<td>Kết nối bị từ chối: sai user name hoặc password</td>
 		</tr>
 		<tr>
 			<td>5</td>
 
 			<td>0x05</td>
-			<td>Connection Refused: not authorized</td>
+			<td>Kết nối bị từ chối: chưa được xác thực</td>
 		</tr>
 		<tr>
 			<td>6-255</td>
 			<td></td>
-			<td>Reserved for future use</td>
+			<td>Sử dụng trong tương lai</td>
 
 		</tr>
 	</tbody>
@@ -984,71 +968,45 @@ type. A return code of zero (0) usually indicates success.</p>
 
 
 <h3>Topic name</h3>
-<p>The topic name is present in the variable header of an MQTT <a href="#publish">PUBLISH</a> message.</p>
-<p>The topic name is the key that identifies the information channel
-to which payload data is published. Subscribers use the key to identify
-the information channels on which they want to receive published
-information.</p>
-<p>The topic name is a UTF-encoded string. See the section on <a href="#utf-8">MQTT
-and UTF-8</a> for more information. Topic name has an upper length limit of
-32,767 characters.</p>
+<p>The topic name được chưa trong phần header thay đổi được của một message <a href="#publish">PUBLISH</a> .</p>
+<p>The topic name là chìa khóa để xác định thông tin về kênh thông tin mà payload sẽ được published tới. Subscribers sử dụng trường này để xác định kênh thông tin mà nó muốn nhận được.</p>
+<p>The topic name là một xâu UTF-encoded. Xem thêm ở chương <a href="#utf-8">MQTT
+and UTF-8</a> để biết thêm thông tin chi tiết. Topic name có giới hạn trên của độ dài là
+32,767 kí tự.</p>
 
 
 <h2 id="payload">2.3. Payload</h2>
-<p>The following types of MQTT command message have a payload:</p>
+<p>Nhưng message dưới đây sẽ có payload:</p>
 <dl>
 
 	<dt><a href="#connect">CONNECT</a></dt>
-	<dd>The payload contains one or more UTF-8 encoded strings. They specify
-        a unqiue identifier for the client, a Will topic and message and the
-        User Name and Password to use. All but the first are optional and their
-        presence is determined based on flags in the variable header.</dd>
+	<dd>Nó chứa một hoặc nhiều chuỗi UTF-8 encoded. Trong đó, chỉ định rõ một identifier duy nhất cho client, một Will topic and message and và cả user name, password nữa. Không phải tất cả chúng đều xuất hiện và sự xuất hiện của chúng được quy định bởi một tập các cờ phía trước.</dd>
 
 
 	<dt><a href="#subscribe">SUBSCRIBE</a></dt>
 
-	<dd>The payload contains a list of topic names to which the client
-	can subscribe, and the QoS level. These strings are UTF-encoded.</dd>
+	<dd>Chứa một danh sách các topic name mà client có thể subcribe và cả QoS level nữa. Tất cả chúng cũng là UTF-encoded.</dd>
 
 
 	<dt><a href="#suback">SUBACK</a></dt>
-	<dd>The payload contains a list of granted QoS levels. These are
-	the QoS levels at which the administrators for the server have
-	permitted the client to subscribe to a particular Topic Name. Granted
-	QoS levels are listed in the same order as the topic names in the
-	corresponding SUBSCRIBE message.</dd>
+	<dd>Payload sẽ chưa một danh sách của các QoS level được cho phép. Có một mức QoS level mà administrators của server cho phép client sử dụng để subcribe đến một Topic name cụ thể. Những QoS level này được liệt kê cùng thứ tự tương ứng với danh sách các Topic Name trong message SUBSCRIBE.</dd>
 
 </dl>
-<p>The payload part of a <a href="#publish">PUBLISH</a> message
-contains application-specific data only. No assumptions are made about
-the nature or content of the data, and this part of the message is
-treated as a BLOB.</p>
+<p>Phần payload của message <a href="#publish">PUBLISH</a> chỉ chứa dữ liệu cho ứng dụng cụ thể. Không thể giả định chúng được tạo bởi dữ liệu tự nhiên hay nội dung của dữ liệu "sống", phần này sẽ được hiểu là một BLOB.</p>
 
-<p>If you want an application to apply compression to the payload
-data, you need to define in the application the appropriate payload flag
-fields to handle the compression details. You cannot define
-application-specific flags in the fixed or variable headers.</p>
+<p>Nếu bạn muốn ứng dụng thực hiện việc nén dữ liệu đưa vào trong payload data, bạn cần định nghĩa trong ứng dụng một cờ payload tương ứng để xử lý nhưng dữ liệu payload này. Bạn không thể định nghĩa một cờ chỉ cho ứng dụng cụ thể bên trong bất cứ thành phần nào của header.</p>
 
 
 <h2 id="msg-id">2.4. Message identifiers</h2>
-<p>The message identifier is present in the variable header of the
-following MQTT messages: PUBLISH, PUBACK, PUBREC, PUBREL, PUBCOMP,
+<p>The message identifier được xuất hiện trong phần header của các message dưới đây: PUBLISH, PUBACK, PUBREC, PUBREL, PUBCOMP,
 SUBSCRIBE, SUBACK, UNSUBSCRIBE, UNSUBACK.</p>
-<p>The Message Identifier (Message ID) field is only present in
-messages where the QoS bits in the fixed header indicate QoS levels 1 or
-2. See section on <a href="#qos-flows">Quality of Service levels and flows</a> for
-more information.</p>
-<p>The Message ID is a 16-bit unsigned integer that must be unique amongst the set
-of "in flight" messages in a particular direction of communication. It typically
-increases by exactly one from one message to the next, but is not
-required to do so.</p>
-<p>A client will maintain its own list of Message IDs separate to the Message IDs used by the
-server it is connected to. It is possible for a client to send a PUBLISH with Message ID 1 at 
-the same time as receiving a PUBLISH with Message ID 1.</p>
-<p>The ordering of the two bytes of the Message Identifier is MSB,
-then LSB (big-endian).</p>
+<p>Trường Message Identifier (Message ID) chỉ xuất hiện trong message khi giá trị QoS bit miêu tả trong header chỉ định đến giá trị QoS 1 hoặc
+2. Xem thêm ở <a href="#qos-flows">Quality of Service levels and flows</a> để biết thêm thông tin chi tiết.</p>
+<p>The Message ID là một giá trị integer 16 bit không dấu và phải là duy nhất trong tập các message ở một hướng kết nối cụ thể nào đó. Thông thường người ta thường tăng lên sau mỗi message nhưng việc tăng này là không bắt buộc.</p>
+<p>A client sẽ phải maintain một danh sách các message IDs để tách biệt với Message ODs được sử dụng server mà nó kết nối đến. Điều này cho phép việc gửi một PUBLISH với message ID bằng 1 tại đúng thời điểm nhận một message được PUBLISH lên server với message ID bằng 1.</p>
+<p>Thứ tự 2 byte ở đây là MSB , sau đó đến LSB</p>
 
-<p>Do not use Message ID 0. It is reserved as an invalid Message ID.</p>
+<p>Đừng sử dụng Message ID là 0. Nó thường được sử dụng là Invalid Message ID</p>
 <table class="bits">
 	<thead>
 		<tr>
@@ -1079,11 +1037,8 @@ then LSB (big-endian).</p>
 </table>
 
 <h2 id="utf-8">2.5. MQTT and UTF-8</h2>
-<p>UTF-8 is an efficient encoding of Unicode character-strings that
-optimizes the encoding of ASCII characters in support of text-based
-communications.</p>
-<p>In MQTT, strings are prefixed with two bytes to denote the length,
-as shown in the table below.</p>
+<p>UTF-8 is là một encoding hiệu quả của cho chuỗi Unicode character-strings, nó vẫn tối ưu việc Encoding các kí tự ASCII trong môi trường giao tiếp dạng text tuần túy.</p>
+<p>Trong MQTT, mỗi xâu được gắn với một phần prefixed có độ dài 2 byte, biểu diễn độ dài của toàn bộ xâu được Encoded, như bảng dưới đây:</p>
 <table class="bits">
 	<thead>
 
@@ -1117,10 +1072,8 @@ as shown in the table below.</p>
 		</tr>
 	</tbody>
 </table>
-<p>String Length is the number of bytes of encoded string
-characters, not the number of characters.
-For example, the string OTWP is encoded in UTF-8 as
-shown in the table below.</p>
+<p>String Length là độ dài byte của xâu sau khi được encoded, chứ không phải là số lượng kí tự, not the number of characters.
+Ví dụ như này, xâu "OTWP" được Encoded trong UTF-8 như bảng dưới đây.</p>
 
 <table class="bits">
 	<thead>
@@ -1245,12 +1198,11 @@ shown in the table below.</p>
 	</tbody>
 </table>
 
-<p>The Java <code>writeUTF()</code> and <code>readUTF()</code> data
-stream methods use this format.</p>
+<p>Data stream của Java sử dụng<code>writeUTF()</code> and <code>readUTF()</code> theo định dạng như trên.</p>
 
 
 <h2 id="unused-bits">2.6. Unused bits</h2>
-<p>Any bits marked as unused should be set to zero (0).</p>
+<p>Những bit được đánh dấu không sử dụng thường được set bằng (0).</p>
 
 </div>
 
@@ -1276,13 +1228,12 @@ stream methods use this format.</p>
 	<li><a href="#disconnect">DISCONNECT</a></li>
 </ul>
 
-<h2 id="connect">3.1. CONNECT - Client requests a connection to a server</h2>
-<p>When a TCP/IP socket connection is established from a client to a server,
-a protocol level session must be created using a CONNECT flow.
+<h2 id="connect">3.1. CONNECT - Client yêu cầu connect đến server</h2>
+<p>Khi một một kết nối TCP/IP được thiết lập từ client đến server, thì một session ở mức protocol cũng được tạo sử dụng luồng CONNECT.
 </p>
 
-<h3>Fixed header</h3>
-<p>The fixed header format is shown in the table below.</p>
+<h3>Header cố định</h3>
+<p>Định dạng được thấy dưới bảng sau:.</p>
 <table class="bits">
 	<thead>
 		<tr>
@@ -1328,15 +1279,14 @@ a protocol level session must be created using a CONNECT flow.
 
 	</tbody>
 </table>
-<p>The DUP, QoS, and RETAIN flags are not used in the CONNECT
-message.</p>
-<p>Remaining Length is the length of the variable header (12 bytes)
-and the length of the Payload. This can be a multibyte field.</p>
+<p>Cờ DUP, QoS, and RETAIN không được sử dụng trong message CONNECT
+.</p>
+<p>Remaining Length là độ dài của phần header thay đổi được(12 bytes)
+và độ dài . Nó có thể là nhiều byte.</p>
 
 
 <h3>Variable header</h3>
-<p>An example of the format of the variable header is shown in the
-table below.</p>
+<p>Một ví dụ về định dạng của phần header biến đổi được có thể thấy trong bảng sau.</p>
 <table class="bits">
 	<thead>
 		<tr>
