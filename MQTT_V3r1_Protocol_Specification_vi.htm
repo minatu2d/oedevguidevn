@@ -525,17 +525,13 @@ bytes là Remaining Length </p>
 
 <h3>Protocol name</h3>
 <p>Xuất hiện trong message
-<a href="#connect">CONNECT</a>. This field is a UTF-encoded string that represents the
-protocol name MQIsdp, capitalized as shown.</p>
+<a href="#connect">CONNECT</a>. Trường này sẽ chứa tên MQIsdp ở dạng chữ hoa</p>
 
 
 <h3>Protocol version</h3>
-<p>The protocol version is present in the variable header of a
-<a href="#connect">CONNECT</a> message.</p>
-<p>The field is an 8-bit unsigned value that represents the revision
-level of the protocol used by the client. The value of the Protocol
-version field for the current version of the protocol, 3 (0x03), is
-shown in the table below.</p>
+<p>Xuất hiện trong phần header của message
+<a href="#connect">CONNECT</a> .</p>
+<p>8 bit  biểu diễn một giá trị không dấu là revision của protocol. Giá trị của trường Protocol version ở version hiện tại đuợc miêu tả dưới bảng sau: </p>
 
 <table class="bits">
 	<thead>
@@ -576,29 +572,18 @@ shown in the table below.</p>
 
 
 <h3>Connect flags</h3>
-<p>The Clean session, Will, Will QoS, and Retain flags are present in
-the variable header of a <a href="#connect">CONNECT</a> message.</p>
+<p>Giá trị này quy định cờ Clean Session, cờ Will, cờ Will QoS, và cờ Retain flags được chứa trong phần header thay đổi đựoc của message<a href="#connect">CONNECT</a> </p>
 
 
 <h3 id="clean-session-flag">Clean session flag</h3>
-<p><b>Position:</b> bit 1 of the Connect flags byte.</p>
-<p>If not set (0), then the server must store the subscriptions of the client
-after it disconnects. This includes continuing to store QoS 1 and QoS 2 messages for the
-subscribed topics so that they can be delivered when the client reconnects. The server must also
-maintain the state of in-flight messages being delivered at the point the connection is lost.
-This information must be kept until the client reconnects.</p>
-<p>If set (1), then the server must discard any previously maintained information 
-about the client and treat the connection as "clean". The server must also discard any
-state when the client disconnects.</p>
-<p>Typically, a client will operate in one mode or the other and not change.
-The choice will depend on the application. A clean session client will not receive stale
-information and it must resubscribe each time it connects. A non-clean session client
-will not miss any QoS 1 or QoS 2 messages that were published whilst it was disconnected. 
-QoS 0 messages are never stored, since they are delivered on a best efforts basis.</p>
-<p>This flag was formerly known as "Clean start". It has been renamed to
-clarify the fact it applies to the whole session and not just to the initial connect.</p>
-<p>A server may provide an administrative mechanism for clearing stored information
-about a client which can be used when it is known that a client will never reconnect.</p>
+<p><b>Position:</b> Bit đầu tiên của byte Connect flags</p>
+<p>Nếu không được set (tức là giá trị bằng 1), thì server phải lưu lại những subscriptions sau khi client này đứt kết nối. Nó bao gồm việc tiếp tục lưu những message có QoS bằng 1 và QoS bằng 2 cho các topic đã subscribed vì thế, chúng có thể được chuyển đi khi client kết nối lại. Server cũng phải cập nhật trạng thái "lơ lửng" của message đang được chuyển đi tại thời điểm mà connection bị lost. Thông tin này phải được giữ đến khi client kết nối lại.</p>
+<p>Nếu mà được set (tức giá trị bằng 1), thì server phải quên hết những thông tin trước đó về client, phải coi như là xóa sạch. Sever cũng phải quên hết mọi trạng thái của client này khi nó đứt kết nối.</p>
+<p>Thông thường, client sẽ thực hiện trong 1 mode (hoặc là luôn clean hoặc là luôn không), it khi thay đổi.
+Lựa chọn này phụ thuộc vào ứng dụng. Client kết nối với một clean conenction sẽ không nhận được những thông tin trước đó, nó phải subscribe lại tại mỗi lần kết nối. Client với kết nối dạng non-clean session sẽ không miss bất cứ gói tin QoS 1 hoặc QoS 2 nào, khi nó được published trong lúc client đứt kết nối. 
+QoS 0 sẽ không bao giờ được lưu lại, vì vậy nó chỉ được chuyển đi theo cách thức cố gắng hết mức ở thời điểm nó được publish thôi.</p>
+<p>Cờ này cũng được biết đến với một nghĩa khác "Clean start". Nó được đổi tên để phù hợp với ý nghĩa là nó được áp dụng cho toàn bộ session, chứ không riêng gì connect khởi tạo .</p>
+<p>Một server có thể cung cấp một cơ chế quản trị cho phép có xóa các thông tin đã lưu về client hay không. Nó có thể được sử dụng trong trường hợp biết chắc chắn rằng client nào đó không bao reconnect.</p>
 
 <table class="bits">
 	<thead>
@@ -643,22 +628,14 @@ about a client which can be used when it is known that a client will never recon
 		</tr>
 	</tbody>
 </table>
-<p>Bit 0 of this byte is not used in the current version
-of the protocol. It is reserved for future use.</p>
+<p>Bit số 0 của byte này không được sử dụng troverserverrsion hiện tại của protocol. Nó có thể được sử dụng trong tương lai.</p>
 
 
 <h3>Will flag</h3>
-<p><b>Position:</b> bit 2 of the Connect flags byte.</p>
-<p>The Will message defines that a message is published on behalf of
-the client by the server when either an I/O error is encountered by the
-server during communication with the client, or the client fails to
-communicate within the Keep Alive timer schedule. Sending a Will message
-is not triggered by the server receiving a DISCONNECT message from the
-client.</p>
-<p>If the Will flag is set, the Will QoS and Will Retain fields must
-be present in the Connect flags byte, and the Will Topic and Will
-Message fields must be present in the payload.</p>
-<p>The format of the Will flag is shown in the table below.</p>
+<p><b>Position:</b> Bit thứ 2 của byte Connect flags</p>
+<p>Trường này định nghĩa rằng, một message được published bởi server nhân danh cho một client mà server không thể giữ kết nối bằng Keep Alive hoặc có lỗi I/O trong quá trình kết nối với Client. Phải phân biệt với trường hợp server nhận được message DISCONNECT từ Client, khi đó nó sẽ không gửi Will message</p>
+<p>Nếu cờ này được set, Will QoS và Will Retain sẽ được biểu diễn trong trong cờ Connect và các trường của Will Topic và Will Message phải có trong phần payload.</p>
+<p> Định dạng của cờ Will được chỉ ra trong bảng dưới đây:.</p>
 <table class="bits">
 	<thead>
 
@@ -703,21 +680,16 @@ Message fields must be present in the payload.</p>
 		</tr>
 	</tbody>
 </table>
-<p>Bit 0 of this byte is not used in the current version
-of the protocol. It is reserved for future use.</p>
+<p>Bit 0 của byte này chưa được sử dụng trong phiên bản hiện tại của protocol này.</p>
 
 
 <h3>Will QoS</h3>
-<p><b>Position:</b> bits 4 and 3 of the Connect flags byte.</p>
-<p>A connecting client specifies the QoS level in the Will QoS field
-for a Will message that is sent in the event that the client is
-disconnected involuntarily. The Will message is defined in the payload
-of a <a href="#connect">CONNECT</a> message.</p>
+<p><b>Position:</b>Byte 3, 4 của byte Connect Flags </p>
+<p>Một quy định về QoS cho message Will là trường Will QoS, message này được gửi để báo về event đứt kết nối với Client không tự nguyện. Message Will được định nghĩa trong phần payload của message 
+of a <a href="#connect">CONNECT</a> .</p>
 
-<p>If the Will flag is set, the Will QoS field is mandatory,
-otherwise its value is disregarded.</p>
-<p>The value of Will QoS is 0 (0x00), 1 (0x01), or 2 (0x02). The
-Will QoS flag is shown in the table below.</p>
+<p>Nếu cờ Will flags được set, thì trường Will QoS sẽ là bắt buộc, ngoài ra nó sẽ bị bỏ qua.</p>
+<p>Các giá trị của Will QoS is 0 (0x00), 1 (0x01), or 2 (0x02). Bảng miêu tả giá trị của cờ này được miêu tả dưới bảng sau.</p>
 <table class="bits">
 	<thead>
 		<tr>
@@ -761,19 +733,15 @@ Will QoS flag is shown in the table below.</p>
 		</tr>
 	</tbody>
 </table>
-<p>Bit 0 of this byte is not used in the current version
-of the protocol. It is reserved for future use.</p>
+<p>Bit 0 không được dùng trong phiên bản này này của procol. Nó có thể được sử dụng trong tương lai.</p>
 
 
 <h3>Will Retain flag</h3>
-<p><b>Position:</b> bit 5 of the Connect flags byte.</p>
+<p><b>Position:</b> Bít 5 của byte Connect flags .</p>
 
-<p>The Will Retain flag indicates whether the server should
-retain the Will message which is published by the server on behalf of
-the client in the event that the client is disconnected unexpectedly.</p>
-<p>The Will Retain flag is mandatory if the Will flag is set,
-otherwise, it is disregarded. The format of the Will Retain flag is
-shown in the table below.</p>
+<p>Cờ Will Retain flag sẽ quy định có hay không việc giữ lại message Will đã được published khi client đứt kết nối bất thường.</p>
+<p>Cờ Will Retain flag là bắt buộc nếu Will flag được set,
+ngoài ra, nó sẽ bị bỏ qua. Định dạng của cờ này được miêu tả trong bảng sau.</p>
 <table class="bits">
 	<thead>
 		<tr>
@@ -817,19 +785,14 @@ shown in the table below.</p>
 		</tr>
 	</tbody>
 </table>
-<p>Bit 0 of this byte is not used in the current version
-of the protocol. It is reserved for future use.</p>
+<p>Bit 0 không được sử dụng trong version này của protocol. Nó có thể được sử dụng trong các phiên bản sau.</p>
 
 <h3>User name and password flags</h3>
-<p><b>Position:</b> bits 6 and 7 of the Connect flags byte.</p>
+<p><b>Position:</b> Bit 6, 7 của byte Connect flags .</p>
 
-<p>A connecting client can specify a user name and a password, and
-setting the flag bits signifies that a User Name, and optionally a password,
-are included in the payload of a <a href="#connect">CONNECT</a> message.</p>
-<p>If the User Name flag is set, the User Name field is mandatory,
-otherwise its value is disregarded.  If the Password flag is set, the
-Password field is mandatory, otherwise its value is disregarded.  It
-is not valid to supply a password without supplying a user name.</p>
+<p>Một kết nối từ client có thể chỉ ra user và password, thiết lập các trường để thông báo rằng có User và Password (tùy chọn) trong phần payload của Message CONNECT <a href="#connect">CONNECT</a> .</p>
+<p>Nếu trường User Name được set, thì trường User Name là bắt buộc,
+ngoài ra nó, sẽ bị bỏ qua. Nếu cờ Password được set, thì trường Password là bắt buộc, mặt khác nó sẽ bỏ qua giá trị này.  Nó sẽ không quan tâm đến Password nếu không cung cấp Username.</p>
 <table class="bits">
 	<thead>
 		<tr>
@@ -877,12 +840,9 @@ is not valid to supply a password without supplying a user name.</p>
 of the protocol. It is reserved for future use.</p>
 
 <h3 id="keep-alive-timer">Keep Alive timer</h3>
-<p>The Keep Alive timer is present in the variable header of a MQTT
-<a href="#connect">CONNECT</a> message.</p>
-<p>The Keep Alive timer, measured in seconds, defines the maximum
-time interval between messages received from a client. It enables the
-server to detect that the network connection to a client has dropped,
-without having to wait for the long TCP/IP timeout. The client has a
+<p>The Keep Alive timer được chứa bên trong phần header thay đổi được của message
+<a href="#connect">CONNECT</a> .</p>
+<p>The Keep Alive timer,  được tính bằng second, định nghĩa interval time lớn nhất giữa các message nhận từ client. Trường này giúp server phát hiện được . The client has a
 responsibility to send a message within each Keep Alive time period. In
 the absence of a data-related message during the time period, the client
 sends a <a href="#pingreq">PINGREQ</a> message, which the server acknowledges with a 
