@@ -1523,105 +1523,67 @@ và độ dài . Nó có thể là nhiều byte.</p>
 </dl>
 
 <h3>Payload</h3>
-The payload of the CONNECT message contains one or more UTF-8 encoded
-strings, based on the flags in the variable header. The strings, if present,
-must appear in the following order:
+Payload của message CONNECT chưa một hoặc nhiều xâu UTF-8 dựa trên các cờ ở phần header thay đổi được. Nhưng xâu này, nếu có sẽ xuất hiện theo thứ tự sau:
 <dl>
 
 	<dt>Client Identifier</dt>
 	<dd>
-	<p>The first UTF-encoded string. The Client Identifier (Client ID)
-	is between 1 and 23 characters long, and uniquely identifies the client
-	to the server. It must be unique across all clients connecting to a
-	single server, and is the key in handling Message IDs messages with QoS
-	levels 1 and 2. If the Client ID contains more than 23 characters, the
-	server responds to the CONNECT message with a CONNACK return code 2:
-	Identifier Rejected.</p>
+	<p>Xâu được encode UTF đầu tiên. The Client Identifier (Client ID)
+	có độ dài từ 1 đến 23 kí tự, và nó xác định một định danh duy nhất của client kết nối đến server. Nó phải là duy nhất khi so sánh với các clients khác, và nó là key để chuyển các message với QoS là 1 và 2. Nếu Client ID chứa nhiều hơn 23 kí tự, server sẽ trả lời yêu cầu CONNECT với mã là 2:
+	Không chấp nhận định danh.</p>
 	</dd>
 
 
 	<dt>Will Topic</dt>
 	<dd>
 
-	<p>If the Will Flag is set, this is the next UTF-8 encoded string. The Will Message is published to
-	the Will Topic. The QoS level is defined by the Will QoS field, and the
-	RETAIN status is defined by the Will RETAIN flag in the variable
-	header.</p>
+	<p>nếu  Will Flag được set, thì đây sẽ là chuỗi UTF-8 tiếp theo. Message Will sẽ được published đến Will Topic. QoS level sẽ được xác định bằng Will QoS field , và 
+	RETAIN status sẽ được xác định bằng cờ Will RETAIN flag trong phần header thay đổi. </p>
 	</dd>
 
 
 	<dt>Will Message</dt>
 	<dd>
-	<p>If the Will Flag is set, this is the next UTF-8 encoded string. The Will Message defines the
-	content of the message that is published to the Will Topic if the
-	client is unexpectedly disconnected. This may be a zero-length message.</p>
-	<p>Although the Will Message is UTF-8 encoded in the
-	CONNECT message, when it is published to the Will Topic only the bytes
-	of the message are sent, not the first two length bytes. The message must
-   therefore only consist of 7-bit ASCII characters.</p>
+	<p>Nếu cờ Will Flag được set, thì đây là xâu UTF-8 tiếp theo. Message Will định nghĩa nội dung của message cái mà sẽ được published đến Will Topic nếu client bị disconnect bất thường. Xâu này cũng có thể là xâu rỗng tức là độ dài bằng 0.</p>
+	<p>Mặc dù message Will Message được encoded trong message
+	CONNECT, khi nó published đến Will Topic thì chỉ bytes của messages được gửi, không phải là 2 byte quy định độ dài đầu tiên. Phần message này phải chỉ có thể chứa các kí tự ASCII 7 bit.</p>
 
 	</dd>
 
 	<dt>User Name</dt>
 	<dd>
-	<p>If the User Name flag is set, this is the next UTF-encoded string.  The user name identifies the name of the user
-	who is connecting, which can be used for authentication.
-	It is recommended that user names are kept to 12 characters or fewer, but
-	it is not required.
+	<p>Nếu User Name flag được set, đây sẽ là xâu UTF-encoded tiếp theo.  Trường này xác định tên của user đang kết nối đến, được sử dụng để authention.
+	Dù không bắt buộc nhưng user name nên có độ dài từ 12 kí tự trở xuống.
 	</p>
-	<p>Note that, for compatibility with the original MQTT V3 specification, 
-	the Remaining Length field from the fixed header takes precedence over the
-	User Name flag.  Server implementations must allow for the possibility that the
-	User Name flag is set, but the User Name string is missing.  This is valid,
-	and connections should be allowed to continue.</p>
+	<p>Chú ý rằng, vì lý do tương thích với MQTT version 3, 
+	trường Remaining Length từ phần header cố định được ưu tiên so với cờ User Name.  Server phải có khả năng cho phép trường hợp mà cờ User Name được set nhưng trường User Name bị thiếu vẫn hợp lệ.  Nó nên được đánh giá là hợp lệ và vẫn cho kết nối được tiếp tục.</p>
 	</dd>
 
 	<dt>Password</dt>
 	<dd>
-	<p>If the Password flag is set, this is the next UTF-encoded string.  The password corresponding to the user
-	who is connecting, which can be used for authentication.
-	It is recommended that passwords are kept to 12 characters or fewer, but
-	it is not required.
+	<p>Nếu Password flag được set, đây sẽ xâu UTF-8 kế tiếp.  Password cho user tương ứng đang kết nối đến, được sử dụng cho việc authentication.
+	Nên để password có độ dài từ 12 kí tự trở xuống dù điều này không bắt buộc.
 	</p>
-	<p>Note that, for compatibility with the original MQTT V3 specification, 
-	the Remaining Length field from the fixed header takes precedence over the
-	Password flag.  Server implementations must allow for the possibility that the
-	Password flag is set, but the Password string is missing.  This is valid,
-	and connections should be allowed to continue.</p>
+	<p>Chú ý rằng, vì lý do tương thích với MQTT version 3, 
+	trường Remaining Length field trong phần header cố định sẽ được ưu tiên hơn trạng thái cờ Password flag.  Server nên cho phép trường hợp Password flag được set, nhưng không có xâu Password sẽ vẫn hợp lệ. Nó nên tiếp tục cho phép kết nối và thực hiện các message khác.</p>
 	</dd>
 </dl>
 
 
 <h3>Response</h3>
 
-<p>The server sends a CONNACK message in response to a CONNECT
-message from a client.</p>
-<p>If the server does not receive a CONNECT message within a
-reasonable amount of time after the TCP/IP connection is established, the server
-should close the connection.</p>
-<p>If the client does not receive a CONNACK message from the server
-within a reasonable amount of time, the client should close the TCP/IP
-socket connection, and restart the session by opening a new socket to the
-server and issuing a CONNECT message.</p>
-<p>In both of these scenarios, a "reasonable" amount of time
-depends on the type of application and the communications
-infrastructure.</p>
-<p>If a client with the same Client ID is already connected to the
-server, the "older" client must be disconnected by the server before completing
-the CONNECT flow of the new client.</p>
-<p>If the client sends an invalid CONNECT message, the server should close the 
-connection. This includes CONNECT messages that provide invalid Protocol Name or
-Protocol Version Numbers. If the server can parse enough of the CONNECT message
-to determine that an invalid protocol has been requested, it may try to send a
-CONNACK containing the "Connection Refused: unacceptable protocol version" code
-before dropping the connection.</p>
+<p>Server sẽ gửi message CONNACK để trả lời message CONNECT từ client.</p>
+<p>Nếu server không nhận được mesage CONNET từ client trong một khoang thời gian nào đó sau khi thiết lập kết nối TCP/IP, thì server nên đóng kết nối đó lại.</p>
+<p>Nếu client không nhận được một message CONNACK từ server trong một khoảng thời gian nhất định, thì client cũng nên đóng kết nối đó lại, và restart session bằng một socket mới đến server rồi tiếp tục gửi yêu cầu kết nối bằng gói CONNECT.</p>
+<p>Trong cả 2 trường hợp trên, thời gian chờ để nhận được message CONNECT hăocj CONNACK phụ thuộc vào ứng dụng và điều kiện kết nối.</p>
+<p>Nếu một client kết nối bằng một Client ID đang được kết nối với Server rồi, thì client trước đó phảu được disconnect bắt buộc bởi server trước khi thực hiện luồng CONNECT với client mới .</p>
+<p>Nếu client gửi một một message CONNECT không hợp lệ, server nên đóng kết nối luôn. Không hợp ở đây bao gồm việc khác nhau về Protocol Name hoặc Protocol Version Numbers. Nếu server đã parse message CONNECT rồi mới phát hiện ra có một trường nào đó không hợp lệ, nó nên gửi lại message CONNACK chứa nội dung mã có nội dung "Kết nối bị từ chối: phiên bản protocol không được chấp nhận" trước khi hủy kết nối này.</p>
 
 <h2 id="connack">3.2. CONNACK - Acknowledge connection request</h2>
-<p>The CONNACK message is the message sent by the server in response
-to a <a href="#connect">CONNECT</a> request from a client.</p>
+<p>Message CONNACK được gửi bởi server như để trả lời một yêu cầu a <a href="#connect">CONNECT</a> từ client.</p>
 
-<h3>Fixed header</h3>
-<p>The fixed header format is shown in the table below.</p>
+<h3>Phần header cố định</h3>
+<p>Có định dạng như bảng dưới đây.</p>
 
 <table class="bits">
 	<thead>
@@ -1680,13 +1642,12 @@ to a <a href="#connect">CONNECT</a> request from a client.</p>
 		</tr>
 	</tbody>
 </table>
-<p>The DUP, QoS and RETAIN flags are not used in the CONNACK
-message.</p>
+<p>Các cờ DUP, QoS and RETAIN không được sử dụng trong message CONNACK.</p>
 
 
-<h3>Variable header</h3>
+<h3>Phần header thay đổi</h3>
 
-<p>The variable header format is shown in the table below.</p>
+<p>Định dạng được chỉ ra ở bảng dưới đây.</p>
 
 <table class="bits">
 	<thead>
@@ -1742,8 +1703,7 @@ message.</p>
 		</tr>
 	</tbody>
 </table>
-<p>The values for the one byte unsigned Connect return code field
-are shown in the table below.</p>
+<p>Mỗi giá trị trả về của Connect được chỉ ra dưới bảng sau</p>
 <table>
 	<thead>
 		<tr>
@@ -1758,12 +1718,12 @@ are shown in the table below.</p>
 			<td>0</td>
 
 			<td>0x00</td>
-			<td>Connection Accepted</td>
+			<td>Kết nối được chấp nhận</td>
 		</tr>
 		<tr>
 			<td>1</td>
 			<td>0x01</td>
-			<td>Connection Refused: unacceptable protocol version</td>
+			<td>Kết nối bị từ chối: Phiên bản protocol không được chấp nhận. </td>
 
 		</tr>
 		<tr>
