@@ -1729,45 +1729,42 @@ Payload của message CONNECT chưa một hoặc nhiều xâu UTF-8 dựa trên 
 		<tr>
 			<td>2</td>
 			<td>0x02</td>
-			<td>Connection Refused: identifier rejected</td>
+			<td>Kết nối vị từ chối: Định danh không hợp lệ</td>
 		</tr>
 		<tr>
 
 			<td>3</td>
 			<td>0x03</td>
-			<td>Connection Refused: server unavailable</td>
+			<td>Kết nối vị từ chối: server không phục vụ được</td>
 		</tr>
 		<tr>
 			<td>4</td>
 			<td>0x04</td>
 
-			<td>Connection Refused: bad user name or password</td>
+			<td>Kết nối bị từ chối: Sai user name hoặc password</td>
 		</tr>
 		<tr>
 			<td>5</td>
 			<td>0x05</td>
-			<td>Connection Refused: not authorized</td>
+			<td>Kết nối bị từ chối: Chưa được xác thực</td>
 		</tr>
 
 		<tr>
 			<td>6-255</td>
 			<td></td>
-			<td>Reserved for future use</td>
+			<td>Dành cho tương lai</td>
 		</tr>
 	</tbody>
 </table>
-<p>Return code 2 (identifier rejected) is sent if the unique client
-identifier is not between 1 and 23 characters in length.</p>
+<p>Mã trả về là 2 sẽ (định danh bị từ chối) sẽ được gửi nếu nếu định danh duy nhất cho 1 client có độ dài không nằm trong khoảng từ 1 đến 23.</p>
 
 
 <h3>Payload</h3>
-<p>There is no payload.</p>
+<p>Không có payload.</p>
 
 
-<h2 id="publish">3.3. PUBLISH - Publish message</h2>
-<p>A PUBLISH message is sent by a client to a server for
-distribution to interested subscribers. Each PUBLISH message is
-associated with a topic name (also known as the Subject or Channel).
+<h2 id="publish">3.3. PUBLISH - Message Publish</h2>
+<p>Một message PUBLISH được gửi từ một client đến server để phân tán chúng đến các subscriber cần chúng. Mỗi message luôn gắn liền với một  topic name (cũng được hiểu là Subject hoặc Channel).
 This is a hierarchical name space that defines a taxonomy of information
 sources for which subscribers can register an interest. A message that
 is published to a specific topic name is delivered to connected
