@@ -1765,17 +1765,12 @@ Payload của message CONNECT chưa một hoặc nhiều xâu UTF-8 dựa trên 
 
 <h2 id="publish">3.3. PUBLISH - Message Publish</h2>
 <p>Một message PUBLISH được gửi từ một client đến server để phân tán chúng đến các subscriber cần chúng. Mỗi message luôn gắn liền với một  topic name (cũng được hiểu là Subject hoặc Channel).
-This is a hierarchical name space that defines a taxonomy of information
-sources for which subscribers can register an interest. A message that
-is published to a specific topic name is delivered to connected
-subscribers for that topic.</p>
-<p>If a client subscribes to one or more
-topics, any message published to those topics are sent by the server to
-the client as a PUBLISH message.</p>
+Topic là có dạng không gian phân cấp, nó định nghĩa ra một cách phân loại nguồn thông tin để cho các subscribers có thể subscribe nếu muốn.Một message được published đến một topic nào đó sẽ được phân phát đến các subscriber quan tâm đến topic đó  .</p>
+<p>Nếu 1 client subscribe một hoặc nhiều topic, thì mọi message được published đến những topic đó đuwocjw gửi bởi server đến client như là một message PUBLISH.</p>
 
 <h3>Fixed header</h3>
 
-<p>The table below shows the fixed header format.</p>
+<p>Bảng dưới đây chỉ ra định dạng phần header cố định.</p>
 <table class="bits">
 	<thead>
 		<tr>
@@ -1823,12 +1818,11 @@ the client as a PUBLISH message.</p>
 <dl>
 
 	<dt>QoS level</dt>
-	<dd>Set to 1. See <a href="#qos-flag">QoS</a> for more details.</dd>
+	<dd>Set là 1. Xem thêm về <a href="#qos-flag">QoS</a> để biết thêm chi tiết.</dd>
 
 
 	<dt>DUP flag</dt>
-	<dd>Set to zero (0). This means that the message is being sent for
-	the first time. See <a href="#dup-flag">DUP</a> for more details.
+	<dd>Set là  (0). Có nghĩa là message được gửi ở lần đầu tiên . Xem thêm  <a href="#dup-flag">DUP</a> để biết chi tiết.
 	</dd>
 
 
