@@ -1766,7 +1766,7 @@ Payload của message CONNECT chưa một hoặc nhiều xâu UTF-8 dựa trên 
 <h2 id="publish">3.3. PUBLISH - Message Publish</h2>
 <p>Một message PUBLISH được gửi từ một client đến server để phân tán chúng đến các subscriber cần chúng. Mỗi message luôn gắn liền với một  topic name (cũng được hiểu là Subject hoặc Channel).
 Topic là có dạng không gian phân cấp, nó định nghĩa ra một cách phân loại nguồn thông tin để cho các subscribers có thể subscribe nếu muốn.Một message được published đến một topic nào đó sẽ được phân phát đến các subscriber quan tâm đến topic đó  .</p>
-<p>Nếu 1 client subscribe một hoặc nhiều topic, thì mọi message được published đến những topic đó đuwocjw gửi bởi server đến client như là một message PUBLISH.</p>
+<p>Nếu 1 client subscribe một hoặc nhiều topic, thì mọi message được published đến những topic đó được gửi bởi server đến client như là một message PUBLISH.</p>
 
 <h3>Fixed header</h3>
 
@@ -1827,36 +1827,33 @@ Topic là có dạng không gian phân cấp, nó định nghĩa ra một cách 
 
 
 	<dt>RETAIN flag</dt>
-	<dd><p>Set to zero. This means do not retain. See <a href="#retain-flag">Retain</a> for more details.</p></dd>
+	<dd><p>Set là zero. Có nghĩa là không giữ lại. Xem thêm <a href="#retain-flag">Retain</a> để biết thêm chi tiết.</p></dd>
 
 
 	<dt>Remaining Length field</dt>
-	<dd>The length of the variable header plus the length of the
-	payload. It can be a multibyte field.</dd>
+	<dd>Độ dài của phần header thay đổi cộng phần payload. Nó có thể là trường nhiều byte .</dd>
 
 </dl>
 
 
 <h3>Variable header</h3>
-<p>The variable header contains the following fields:</p>
+<p>Phần header có độ dài thay đổi được chứa các thành phần sau:</p>
 <dl>
 
 	<dt>Topic name</dt>
-	<dd>A UTF-encoded string.
-   <p>This must not contain <a href="#appendix-a">Topic wildcard</a> characters.</p>
-   <p>When received by a client that subscribed using wildcard characters, 
-   this string will be the absolute topic specified by the originating publisher and <em>not</em> the
-   subscription string used by the client.</p>
+	<dd>Một xâu UTF.
+   <p>Nó không chứa <a href="#appendix-a">kí tự đại diện trong topic</a> .</p>
+   <p>Khi nhận được yêu cầu subscribe từ client thì topic đó của thể chứa kí tự đại diện, 
+   Chuỗi này hoàn toàn được xác định bởi publisher chưa không phải là topic mà client đã subcribe.</p>
    </dd>
 
 
 	<dt>Message ID</dt>
-	<dd>Present for messages with QoS level 1 and QoS level 2. See <a href="#msg-id">Message identifiers</a> for more details.
+	<dd>Được sử dụng cho các messsage có QoS là 1 hoặc 2. Xem <a href="#msg-id">Message identifiers</a> để biết thêm chi tiết.
 	</dd>
 
 </dl>
-<p>The table below shows an example variable header for a PUBLISH
-message.</p>
+<p>Bảng sau đây chỉ ra một ví dụ về header có độ dài thay đổi cho PUBLISH message.</p>
 <table>
 	<thead>
 		<tr>
@@ -1882,8 +1879,7 @@ message.</p>
 	</tbody>
 
 </table>
-<p>The format of the variable header in this case is shown in the
-table below.</p>
+<p>Định dạng của phần header thay đổi trong trường hợp này được chỉ ra dưới bảng sau:.</p>
 <table class="bits">
 	<thead>
 		<tr>
@@ -2010,19 +2006,16 @@ table below.</p>
 </table>
 
 <h3>Payload</h3>
-<p>Contains the data for publishing. The content and format of the
-data is application specific. The Remaining Length field in the fixed
-header includes both the variable header length and the payload length. As such,
-it is valid for a PUBLISH to contain a 0-length payload.</p>
+<p>Chưa phần dữ liệu cho việc publishing. Nội dung và định dạng của dữ liệu là do ứng dụng quy định. Trường Remaining Length field trong phần độ dài cố định sẽ bao gồm cả phần độ dài thay đổi và phần payload. Như vậy,
+hoàn toàn hợp lệ khi một message PUBLISH chứa độ dài payload là 0.</p>
 <h3>Response</h3>
-<p>The response to a PUBLISH message depends on the QoS level. The
-table below shows the expected responses.</p>
+<p>Response cho PUBLISH message phụ thuộc vào level của QoS. Bảng dưới đây sẽ chỉ ra chi tiết.</p>
 <table>
 	<thead>
 
 		<tr>
 			<td>QoS Level</td>
-			<td>Expected response</td>
+			<td>Giá trị trả về mong muốn</td>
 		</tr>
 	</thead>
 	<tbody>
@@ -2044,44 +2037,30 @@ table below shows the expected responses.</p>
 </table>
 
 <h3>Actions</h3>
-<p>PUBLISH messages can be sent either from a publisher to the
-server, or from the server to a subscriber. The action of the recipient
-when it receives a message depends on the QoS level of the message:</p>
+<p>Các  message PUBLISH được gửi từ Publisher đến server, hoặc là từ Server đến Subsciber. Việc tiếp thu khi nó nhận được messsage phụ thuộc vào QoS level của message:</p>
 
 <dl>
 
 	<dt>QoS&nbsp;0</dt>
-	<dd>Make the message available to any interested parties.</dd>
+	<dd>Phải đảm bảo chắc chắn rằng các message đến các bên quan tâm.</dd>
 
 
 	<dt>QoS&nbsp;1</dt>
-	<dd>Log the message to persistent storage, make it available to
-	any interested parties, and return a PUBACK message to the sender.</dd>
+	<dd>Giữ một bản của messsage trên bộ nhớ ngoài, tất nhiên cũng phải đảm báo nó đến các bên quan tâm, và trả lại một message PUBACK đến bên gửi.</dd>
 
 
 	<dt>QoS&nbsp;2</dt>
-	<dd>Log the message to persistent storage, do not make it
-	available to interested parties yet, and return a PUBREC message to the
-	sender.</dd>
+	<dd>Giữ lại một bản trên bộ nhớ ngoài, đừng gửi nó đến các bên quan tâm , trả về message PUBREC đến bên gửi.</dd>
 
 </dl>
-<p>If the server receives the message, interested parties means
-subscribers to the topic of the PUBLISH message. If a subscriber
-receives the message, interested parties means the application on the
-client which has subscribed to one or more topics, and is waiting for a
-message from the server.</p>
-<p>See <a href="#qos-flows">Quality of Service levels and flows</a> for more details.</p>
-<p>Note that if a server implementation does not authorize a PUBLISH
-to be made by a client, it has no way of informing that client.  It must
-therefore make a positive acknowledgement, according to the normal QoS 
-rules, and the client will <em>not</em> be informed that it was not 
-authorized to publish the message.</p>
+<p>Ở đây, nếu server nhận được message, các bên quan tâm nghĩa là các subscriber đến topic của message PUBLISH đó. Nếu một subscriber nhận một message, thì các bên quan tâm ám chỉ đến các ứng dụng bên phía client mà đã subcribe mọt hoặc nhiều topics và đang đợi một message đến từ server.</p>
+<p>Xem thêm <a href="#qos-flows">Quality of Service levels and flows</a> để biết chi tiết.</p>
+<p>Chú ý rằng nếu một server mà không xác nhận được một PUBLISH từ một client, thì nó không có cách nào để thông bao đến client đó.  Vì thế nó phải đảm bảo một mức hiểu biết nhất định, tùy thuộc vào các rule QoS, client sẽ <em>không</em> được báo rằng việc xác thực message PUBLISH nó gửi đi.</p>
 
 
 <h2 id="puback">3.4. PUBACK - Publish acknowledgment</h2>
-<p>A PUBACK message is the response to a <a href="#publish">PUBLISH</a>
-message with QoS level 1. A PUBACK message is sent by a server in
-response to a PUBLISH message from a publishing client, and by a
+<p>Một message PUBACK sẽ được gửi trả cho một message <a href="#publish">PUBLISH</a>
+với QoS level là 1. Một message PUBACK sẽ được gửi bởi serrver để trả lời một PUBLISH message, and by a
 subscriber in response to a <a href="#publish">PUBLISH</a> message from
 the server.</p>
 
