@@ -2066,7 +2066,7 @@ the server.</p>
 
 <h3>Fixed header</h3>
 
-<p>The table below shows the format of the fixed header.</p>
+<p>Bảng dưới đây chỉ ra cấu trúc của phần header cố định.</p>
 
 <table class="bits">
 	<thead>
@@ -2129,25 +2129,23 @@ the server.</p>
 <dl>
 
 	<dt>QoS level</dt>
-	<dd>Not used.</dd>
+	<dd>Không sử dụng.</dd>
 
 
 	<dt>DUP flag</dt>
-	<dd>Not used.</dd>
+	<dd>Không sử dụng.</dd>
 
 
 	<dt>RETAIN flag</dt>
-	<dd>Not used.</dd>
+	<dd>Không sử dụng.</dd>
 
 	<dt>Remaining Length field</dt>
-	<dd>This is the length of the variable header (2 bytes). It can be
-	a multibyte field.</dd>
+	<dd>Đây là độ dài của phần header thay đổi được. (2 bytes). Nó có thể là trường nhiều byte.</dd>
 
 </dl>
 
 <h3>Variable header</h3>
-<p>Contains the Message Identifier (Message ID) for the <a href="#publish">PUBLISH</a> message that is being acknowledged. The
-table below shows the format of the variable header.</p>
+<p>Chứa phần Message Identifier (Message ID) cho message <a href="#publish">PUBLISH</a>  cái được trả lời ACK. Bảng sau chỉ ra định dạng của phần header thay đổi được.</p>
 
 <table class="bits">
 	<thead>
@@ -2179,25 +2177,20 @@ table below shows the format of the variable header.</p>
 </table>
 
 <h3>Payload</h3>
-<p>There is no payload.</p>
+<p>Không có payload.</p>
 
 
 <h3>Actions</h3>
 
-<p>When the client receives the PUBACK message, it discards the
-original message, because it is also received (and logged) by the
-server.</p>
+<p>Khi client nhận một message PUBACK, nó sẽ hủy message đã PUBLISH vì message đó đã được nhận bởi server.</p>
 
 
-<h2 id="pubrec">3.5. PUBREC - Assured publish received (part 1)</h2>
-<p>A PUBREC message is the response to a <a href="#publish">PUBLISH</a>
-message with QoS level 2. It is the second message of the QoS level 2
-protocol flow. A PUBREC message is sent by the server in response to a <a href="#publish">PUBLISH</a> message from a publishing client, or by a
-subscriber in response to a <a href="#publish">PUBLISH</a> message from
-the server.</p>
+<h2 id="pubrec">3.5. PUBREC - Chắc chắn nhận được publish (phần 1)</h2>
+<p>Một message PUBREC trả lời cho một message <a href="#publish">PUBLISH</a>
+với QoS level là 2. Nó là message thứ 2 trong flow mà QoS level = 2. Mesage này sẽ coi như là một trả lời cho messge<a href="#publish">PUBLISH</a> đến từ client, or hoặc bởi một subscriber khi trả lời một message <a href="#publish">PUBLISH</a> từ Server.</p>
 
 <h3>Fixed header</h3>
-<p>The table below shows the fixed header format.</p>
+<p>Bảng dưới đây chỉ ra định dạng của header có độ dài cố định.</p>
 <table class="bits">
 	<thead>
 		<tr>
@@ -2258,26 +2251,24 @@ the server.</p>
 <dl>
 
 	<dt>QoS level</dt>
-	<dd>Not used.</dd>
+	<dd>Không sử dụng.</dd>
 
 	<dt>DUP flag</dt>
-	<dd>Not used.</dd>
+	<dd>Không sử dụng.</dd>
 
 
 	<dt>RETAIN flag</dt>
-	<dd>Not used.</dd>
+	<dd>Không sử dụng.</dd>
 
 
 	<dt>Remaining Length field</dt>
-	<dd>The length of the variable header (2 bytes). It can be a
-	multibyte field.</dd>
+	<dd>Độ dài của phần header thay đổi được (2 bytes). Nó có thể là trường nhiều byte.</dd>
 
 </dl>
 
 <h3>Variable header</h3>
-<p>The variable header contains the Message ID for the acknowledged
-<a href="#publish">PUBLISH</a>. The table below shows the format of the
-variable header.</p>
+<p>Phần header thay đổi được chưa Message ID để trả lời cho message
+<a href="#publish">PUBLISH</a>. Bảng sau đây chỉ ra định dạng của phần header thay đổi được.</p>
 <table class="bits">
 	<thead>
 
@@ -2309,22 +2300,18 @@ variable header.</p>
 </table>
 
 <h3>Payload</h3>
-<p>There is no payload.</p>
+<p>Không có payload.</p>
 
 <h3>Actions</h3>
-<p>When it receives a PUBREC message, the recipient sends a PUBREL
-message to the sender with the same Message ID as the PUBREC message.</p>
+<p>Khi nhận được một message PUBREC, bên nhận sẽ gửi một message PUBREL đến bên gửi với cùng Message ID với PUBREC message.</p>
 
 
-<h2 id="pubrel">3.6. PUBREL - Assured Publish Release (part 2)</h2>
-<p>A PUBREL message is the response either from a publisher to a
-<a href="#pubrec">PUBREC</a> message from the server, or from the 
-server to a <a href="#pubrec">PUBREC</a> message
-from a subscriber. It is the third message in the QoS 2 protocol
-flow.</p>
+<h2 id="pubrel">3.6. PUBREL - Release Publish đảm bảo(Phần 2)</h2>
+<p>Message PUBREL message là trả lời từ một publisher cho message
+<a href="#pubrec">PUBREC</a> được gửi đến từ server, or hoặc được gửi server để trả lời cho message <a href="#pubrec">PUBREC</a> đến từ một subscriber. Đây là message thứ 3 trong flow QoS Level = 2.</p>
 
 <h3>Fixed header</h3>
-<p>The table below shows the fixed header format.</p>
+<p>Bảng dưới đây chỉ ra định dạng của header có độ dài cố định.</p>
 <table class="bits">
 	<thead>
 
@@ -2386,29 +2373,25 @@ flow.</p>
 <dl>
 
 	<dt>QoS level</dt>
-	<dd><p>PUBREL messages use QoS level 1 as an acknowledgement is expected 
-   in the form of a <a href="#pubcomp">PUBCOMP</a>. Retries are handled in the same way as <a href="#publish">PUBLISH</a> messages.</p></dd>
+	<dd><p>Các message PUBREL sử dụng QoS level = 1 như là một công nhận được mong muốn dạng một <a href="#pubcomp">PUBCOMP</a>. Các retry sẽ được xử lý như với message <a href="#publish">PUBLISH</a> .</p></dd>
 
 
 	<dt>DUP flag</dt>
-	<dd><p>Set to zero (0). This means that the message is being sent for
-	the first time. See <a href="#dup-flag">DUP</a> for more details.</p></dd>
+	<dd><p>Set là zero (0). Có nghĩa là message này được gửi cho lần đầu. Xem thêm <a href="#dup-flag">DUP</a> để biết thêm chi tiết.</p></dd>
 
 
 	<dt>RETAIN flag</dt>
-	<dd>Not used.</dd>
+	<dd>Không sử dụng.</dd>
 
 
 	<dt>Remaining Length field</dt>
-	<dd>The length of the variable header (2 bytes). It can be a
-	multibyte field.</dd>
+	<dd>Độ dài của phần header thay đổi được ( 2 bytes). Nó có thể là trường nhiều byte.</dd>
 
 </dl>
 
 <h3>Variable header</h3>
-<p>The variable header contains the same Message ID as the <a href="#pubrec">PUBREC</a>
-message that is being acknowledged. The table below shows the format of
-the variable header.</p>
+<p>Phần header thay đổi được chứa cùng Message ID với message<a href="#pubrec">PUBREC</a>
+cái được hiểu như là ACK. Bản sau mô tả định dạng của trường header có độ dài thay đổi được.</p>
 <table class="bits">
 	<thead>
 		<tr>
@@ -2440,19 +2423,14 @@ the variable header.</p>
 </table>
 
 <h3>Payload</h3>
-<p>There is no payload.</p>
+<p>Không có payload.</p>
 
 <h3>Actions</h3>
-<p>When the server receives a PUBREL message from a publisher, the
-server makes the original message available to interested subscribers,
-and sends a PUBCOMP message with the same Message ID to the publisher.
-When a subscriber receives a PUBREL message from the server, the
-subscriber makes the message available to the subscribing application
-and sends a PUBCOMP message to the server.</p>
+<p>Khi server nhận được một message PUBREL từ publisher, server sẽ đưa message đó đến các subscriber quan tâm, và gửi message PUBCOMP với cùng một Message ID đến publisher. Khi một subscriber nhận một message PUBREL từ server, thì nó có thể sử dụng message đã nhận được cho các ứng dụng phia trên, đồng thời cũng gửi một message PUBCOMP đến server</p>
 
 
 <h2 id="pubcomp">3.7. PUBCOMP - Assured publish complete (part 3)</h2>
-<p>This message is either the response from the server to a <a href="#pubrel">PUBREL</a>
+<p>Message này hoặc  <a href="#pubrel">PUBREL</a>
 
 message from a publisher, or the response from a subscriber to a <a href="#pubrel">PUBREL</a>
 message from the server. It is the fourth and last message in the
