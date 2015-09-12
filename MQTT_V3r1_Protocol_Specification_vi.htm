@@ -2429,16 +2429,16 @@ cái được hiểu như là ACK. Bản sau mô tả định dạng của trư�
 <p>Khi server nhận được một message PUBREL từ publisher, server sẽ đưa message đó đến các subscriber quan tâm, và gửi message PUBCOMP với cùng một Message ID đến publisher. Khi một subscriber nhận một message PUBREL từ server, thì nó có thể sử dụng message đã nhận được cho các ứng dụng phia trên, đồng thời cũng gửi một message PUBCOMP đến server</p>
 
 
-<h2 id="pubcomp">3.7. PUBCOMP - Assured publish complete (part 3)</h2>
-<p>Message này hoặc  <a href="#pubrel">PUBREL</a>
+<h2 id="pubcomp">3.7. PUBCOMP - Publish đảm bảo hoàn thành (Phần 3)</h2>
+<p>Message này hoặc là trả lời từ server cho message <a href="#pubrel">PUBREL</a>
 
-message from a publisher, or the response from a subscriber to a <a href="#pubrel">PUBREL</a>
-message from the server. It is the fourth and last message in the
-QoS 2 protocol flow.</p>
+từ publisher, hoặc trả lời từ subscriber cho một message <a href="#pubrel">PUBREL</a>
+từ server. Nó là message cuối cùng trong flow
+QoS level = 2.</p>
 
 <h3>Fixed header</h3>
 
-<p>The table below shows the fixed header format.</p>
+<p>Bảng dưới đây chỉ ra định dạng của phần header thay đổi được.</p>
 <table class="bits">
 	<thead>
 		<tr>
@@ -2500,15 +2500,15 @@ QoS 2 protocol flow.</p>
 
 	<dt>QoS level</dt>
 
-	<dd>Not used.</dd>
+	<dd>Không sử dụng.</dd>
 
 
 	<dt>DUP flag</dt>
-	<dd>Not used.</dd>
+	<dd>Không sử dụng.</dd>
 
 
 	<dt>RETAIN flag</dt>
-	<dd>Not used.</dd>
+	<dd>Không sử dụng.</dd>
 
 
 	<dt>Remaining Length field</dt>
