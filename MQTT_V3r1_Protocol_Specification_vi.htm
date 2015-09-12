@@ -2684,12 +2684,9 @@ với Message ID bằng 10.</p>
 
 <h3>Payload</h3>
 <p>Payload của một message SUBSCRIBE chứa một danh sách các topics
-mà các client đã subscribe, và QoS level ở mức mà client muốn. The strings are UTF-encoded, and
-the QoS level occupies 2 bits of a single byte. The topic strings may
-contain special <a href="#appendix-a">Topic wildcard</a> characters
-to represent a set of topics. These topic/QoS pairs
-are packed contiguously as shown in the example payload in the table
-below.</p>
+mà các client đã subscribe, và QoS level ở mức mà client muốn. Xâu được encode ở dạng UTF, và
+ QoS level chiếm 2 bits trong 1 single byte. Topic có thể chứa <a href="#appendix-a"> những kí tự đại diện đặc biệt</a> để biểu diễn một tập các Topic. Cặp topic/QoS 
+được nhóm liên tiếp nhau trong ví dụ của hình dưới đây.</p>
 <table>
 	<tbody>
 		<tr>
@@ -2698,7 +2695,7 @@ below.</p>
 			<td>"a/b"</td>
 		</tr>
 		<tr>
-			<td>Requested QoS</td>
+			<td>QoS đã yêu cầu</td>
 			<td>1</td>
 		</tr>
 
@@ -2707,14 +2704,14 @@ below.</p>
 			<td>"c/d"</td>
 		</tr>
 		<tr>
-			<td>Requested QoS</td>
+			<td>QoS đã yêu câu</td>
 			<td>2</td>
 
 		</tr>
 	</tbody>
 </table>
-<p>Topic names in a SUBSCRIBE message are not compressed.</p>
-<p>The format of the example payload is shown in the table below.</p>
+<p>Topic names trong message SUBSCRIBE sẽ không được nén.</p>
+<p>Ví dụ về cấu trúc của payload được mô tả ở bảng dưới đây.</p>
 <table class="bits">
 	<thead>
 		<tr>
@@ -2916,22 +2913,13 @@ below.</p>
 		</tr>
 	</tbody>
 </table>
-<p>Assuming that the requested QoS level is granted, the client
-receives <a href="#publish">PUBLISH</a> messages at less than or equal
-to this level, depending on the QoS level of the original message from
-the publisher. For example, if a client has a QoS level 1 subscription
-to a particular topic, then a QoS level 0 <a href="#publish">PUBLISH</a>
-message to that topic is delivered to the client at QoS level 0. A QoS
-level 2 <a href="#publish">PUBLISH</a> message to the same topic is
-downgraded to QoS level 1 for delivery to the client.</p>
+<p>Giả định rằng QoS level yêu cầu được chấp nhận, client nhận message <a href="#publish">PUBLISH</a> messages có QoS nhỏ hơn hoặc bằng level nó yêu cầu, sự trên các QoS từ các message gốc được published lên server. Ví dụ, nếu một client có QoS level = 1 cho 1 subscription
+đến một topic cụ thể, thì một message<a href="#publish">PUBLISH</a>
+cho topic nào đó có QoS level = 0 sẽ được chuyển đến các client có QoS level = 0. Một message <a href="#publish">PUBLISH</a> có QoS level = 2, đến cùng topic đó sẽ bị downgrade về QoS level = 1 khi chuyển đến client (yêu cầu QoS =1).</p>
 
-<p>A corollary to this is that subscribing to a topic at QoS level 2
-is equivalent to saying "I would like to receive messages on this topic
-at the QoS at which they are published".</p>
+<p>Một hệ quả cho điều này là việc subscribe ở QoS Level = 2 sẽ tương đương với việc nói rằng :"Tôi muốn nhận các message ở topic này với các QoS giống với message nó được published lên ".</p>
 
-<p>This means a publisher is responsible for determining
-the maximum QoS a message can be delivered at, but a subscriber is able to
-downgrade the QoS to one more suitable for its usage. The QoS of a message
+<p>Điều này có nghĩa rằng publisher coi QoS level như là QoS level lớn nhất mà message nó publish tới, nhưng một subscriber có thể downgrade QoS Level để phù hợp với mục đích sư dụng của nó. The QoS of a message
 is never upgraded.</p>
 
 <p>The Requested QoS field is encoded in the byte following each
