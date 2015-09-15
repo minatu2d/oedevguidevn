@@ -2922,8 +2922,8 @@ cho topic nào đó có QoS level = 0 sẽ được chuyển đến các client 
 <p>Điều này có nghĩa rằng publisher coi QoS level như là QoS level lớn nhất mà message nó publish tới, nhưng một subscriber có thể downgrade QoS Level để phù hợp với mục đích sư dụng của nó. The QoS of a message
 is never upgraded.</p>
 
-<p>The Requested QoS field is encoded in the byte following each
-UTF-encoded topic name as shown in the table below.</p>
+<p>Trường Requested QoS được chứa trong 1 byte kèm theo 
+topic name được encode dạng UTF như bảng dưới đây.</p>
 <table class="bits">
 	<thead>
 		<tr>
@@ -2967,37 +2967,29 @@ UTF-encoded topic name as shown in the table below.</p>
 		</tr>
 	</tbody>
 </table>
-<p>The upper 6 bits of this byte are not used in the current version
-of the protocol. They are reserved for future use.</p>
-<p>A request with both QoS level bits set should be considered an invalid packet
-and the connection closed.</p>
+<p>6 bít của byte này không được sử dụng trong phiên bản hiện tại của protocol. Chúng có thể được sử dụng trong tương lai.</p>
+<p>Khi không có 2 bit QoS level thì packet nền được hiểu là hỏng và kết nối coi như bị đóng.</p>
 
 <h3>Response</h3>
-<p>When it receives a SUBSCRIBE message from a client, the server
-responds with a SUBACK message.</p>
-<p>A server may start sending <a href="#publish">PUBLISH</a> messages due to the
-subscription before the client receives the SUBACK message.</p>
+<p>Khi nhận được một message SUBSCRIBE message từ, server
+trả lời bằng message SUBACK.</p>
+<p>Một server bắt đầu gửi một message <a href="#publish">PUBLISH</a> cho yêu cầu của về subscription của client thậm chí trước khi client nhận được message SUBACK.</p>
 
-<p>Note that if a server implementation does not authorize a SUBSCRIBE request
-to be made by a client, it has no way of informing that client.  It must
-therefore make a positive acknowledgement with a SUBACK, and the client 
-will <em>not</em> be informed that it was not authorized to subscribe.</p>
+<p>Chú ý rằng nếu một server không xác nhận một yêu cầu SUBSCRIBE từ client, thì nó không có cách nào thông tin cho client. Vì thế nó tạo ra message SUBACK như là để xác nhận, và client 
+sẽ <em>không</em> được thông báo rằng nó không được xác thực.</p>
 
-<p>A server may chose to grant a lower level of QoS than the client requested. This
-could happen if the server is not able to provide the higher levels of QoS. For example,
-if the server does not provider a reliable persistence mechanism it may chose to only
-grant subscriptions at QoS 0.</p>
+<p>Một server có quyền chỉ định một level of QoS thấp hơn client yêu cầu. Điều này có thể xảy ra nếu server không thể cung cấp các levels of QoS cao hơn. Ví dụ,
+nếu server không cung cấp một cơ chế lưu trữ tin cậy nào đó nó có thể chỉ cấp cho các subscriptions với QoS là 0.</p>
 
 
 <h2 id="suback">3.9. SUBACK - Subscription acknowledgement</h2>
-<p>A SUBACK message is sent by the server to the client to confirm receipt of a 
-<a href="#subscribe">SUBSCRIBE</a> message.</p>
-<p>A SUBACK message contains a list of granted QoS levels. The order of granted
-QoS levels in the SUBACK message matches the order of the topic names in the 
-corresponding <a href="#subscribe">SUBSCRIBE</a> message.</p>
+<p>Message SUBACK message được gửi bởi server đến client để báo với client rằng nó đã nhận message 
+<a href="#subscribe">SUBSCRIBE</a>.</p>
+<p>Message SUBACK chứa một danh sáchh QoS levels đã được cấp. Thứ tự các
+QoS levels bên trong message SUBACK sẽ khớp theo thứ tự của các topic name tương ứng trong message <a href="#subscribe">SUBSCRIBE</a>.</p>
 
 <h3>Fixed header</h3>
-<p>The table below shows the fixed header format.</p>
+<p>Bảng dưới đây chỉ ra chỉ ra định dạng phần header cố định.</p>
 <table class="bits">
 	<thead>
 		<tr>
@@ -3045,16 +3037,16 @@ corresponding <a href="#subscribe">SUBSCRIBE</a> message.</p>
 <dl>
 	<dt>QoS level</dt>
 
-	<dd>Not used.</dd>
+	<dd>Không sử dụng.</dd>
 
 	<dt>DUP flag</dt>
-	<dd>Not used.</dd>
+	<dd>Không sử dụng.</dd>
 
 	<dt>RETAIN flag</dt>
-	<dd>Not used.</dd>
+	<dd>Không sử dụng.</dd>
 
 	<dt>Remaining Length field</dt>
-	<dd>The length of the payload. It can be a multibyte field.</dd>
+	<dd>Độ dài của payload. Nó có thể là nhiều byte.</dd>
 
 </dl>
 
