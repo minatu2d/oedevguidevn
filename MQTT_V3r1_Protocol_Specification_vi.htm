@@ -3051,8 +3051,7 @@ QoS levels bên trong message SUBACK sẽ khớp theo thứ tự của các topi
 </dl>
 
 <h3>Variable header</h3>
-The variable header contains the Message ID for the SUBSCRIBE message 
-that is being acknowledged. The table below shows the format of the variable header.
+Phần header thay đổi được chứa Message ID của message SUBSCRIBE, cái đang được xác nhận. Bảng dưới đây chỉ ra định dạng của phần header thay đổi được.
 <table class="bits">
 	<thead>
 		<tr>
@@ -3084,12 +3083,9 @@ that is being acknowledged. The table below shows the format of the variable hea
 </table>
 
 <h3>Payload</h3>
-<p>The payload contains a vector of granted QoS levels. Each level corresponds 
-to a topic name in the corresponding SUBSCRIBE message. The order of QoS levels 
-in the SUBACK message matches the order of topic name and Requested QoS pairs 
-in the SUBSCRIBE message. The Message ID in the variable header enables you to 
-match SUBACK messages with the corresponding SUBSCRIBE messages.</p>
-<p>The table below shows the Granted QoS field encoded in a byte.</p>
+<p>Phần payload chứa một vector của các QoS levels được cho phép. Mỗi level tương ứng với mỗi topic name trong message SUBSCRIBE. Thứ tự của QoS levels 
+trong message SUBACK khớp với thứ tự topic name và cặp QoS yêu cầu trong message SUBSCRIBE. Message ID trong phần header thay đổi cho phép match message SUBACK với các message SUBSCRIBE tương ứng.</p>
+<p>Bảng dưới đây chỉ ra trường QoS được encode trong 1 byte.</p>
 <table class="bits">
 	<thead>
 		<tr>
@@ -3132,9 +3128,9 @@ match SUBACK messages with the corresponding SUBSCRIBE messages.</p>
 		</tr>
 	</tbody>
 </table>
-<p>The upper 6 bits of this byte are not used in the current version of the protocol. 
-They are reserved for future use.</p>
-<p>The table below shows an example payload.</p>
+<p>6 bit đầu của byte không được sử dụng trong phiên bản hiện của trình duyệt. 
+Có thể sẽ được sử dụng trong tương lai.</p>
+<p>Bảng dưới đây chỉ ra một ví dụ của payload.</p>
 
 <table>
 	<tbody><tr>
@@ -3198,11 +3194,10 @@ They are reserved for future use.</p>
 </table>
 
 <h2 id="unsubscribe">3.10. UNSUBSCRIBE - Unsubscribe from named topics</h2>
-<p>An UNSUBSCRIBE message is sent by the client to the server to
-unsubscribe from named topics.</p>
+<p>Một message UNSUBSCRIBE được gửi bởi client đến server để unsubscribe một topic name nào đó.</p>
 
 <h3>Fixed header</h3>
-<p>The table below shows an example fixed header format.</p>
+<p>Bảng sau chỉ ra một ví dụ của phần header cố định.</p>
 
 <table class="bits">
 	<thead>
@@ -3252,31 +3247,28 @@ unsubscribe from named topics.</p>
 
 	<dt>QoS level</dt>
 
-	<dd>UNSUBSCRIBE messages use QoS level 1 to acknowledge multiple unsubscribe
-	requests. The corresponding UNSUBACK message is identified by the
-	Message ID. Retries are handled in the same way as <a href="#publish">PUBLISH</a>
-	messages.</dd>
+	<dd>Các message UNSUBSCRIBE sử dụng QoS level 1 để chấp nhận nhiều unsubscribe request. Message UNSUBACK tương ứng được xác định bởi 
+	Message ID. Các Retries được thực hiện theo cùng một cách với message <a href="#publish">PUBLISH</a>
+	.</dd>
 
 	<dt>DUP flag</dt>
-	<dd><p>Set to zero (0). This means that the message is being sent for
-	the first time. See <a href="#dup-flag">DUP</a> for more details.</p></dd>
+	<dd><p>Set là zero(0). Có nghĩa là message này được gửi lần đầu. Xem message <a href="#dup-flag">DUP</a> for để biết thêm chi tiết.</p></dd>
 
 
 	<dt>RETAIN flag</dt>
-	<dd>Not used.</dd>
+	<dd>Không sử dụng.</dd>
 
 
 	<dt>Remaining Length</dt>
-	<dd>This is the length of the Payload. It can be a multibyte
-	field.</dd>
+	<dd>Đây là độ dài của Payload. Nó có thể là trường nhiều byte.</dd>
 
 </dl>
 
 <h3>Variable header</h3>
-<p>The variable header contains a Message ID because an UNSUBSCRIBE
-message has a QoS level of 1. See <a href="#msg-id">Message identifiers</a> for more details.</p>
-<p>The table below shows an example format for the variable header
-with a Message ID of 10.</p>
+<p>Phần header thay đổi chứa Message ID bởi vì một message UNSUBSCRIBE
+message có QoS level of 1. Xem thêm <a href="#msg-id">Message identifiers</a> để biết thêm chi tiết.</p>
+<p>Bảng sau chỉ ra một ví dụ về định dạng của phần header thay đổi
+với Message ID là 10.</p>
 <table class="bits">
 	<thead>
 		<tr>
@@ -3331,8 +3323,7 @@ with a Message ID of 10.</p>
 </table>
 
 <h3>Payload</h3>
-<p>The client unsubscribes from the list of topics named in the
-payload. The strings are UTF-encoded and are packed contiguously. Topic
+<p>Client unsubscribes từ một danh sách topics named trong phần payload. The strings are UTF-encoded and are packed contiguously. Topic
 names in a UNSUBSCRIBE message are not compressed. The table below shows
 an example payload.</p>
 <table>
