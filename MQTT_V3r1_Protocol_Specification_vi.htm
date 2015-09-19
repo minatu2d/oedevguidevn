@@ -3323,9 +3323,7 @@ với Message ID là 10.</p>
 </table>
 
 <h3>Payload</h3>
-<p>Client unsubscribes từ một danh sách topics named trong phần payload. The strings are UTF-encoded and are packed contiguously. Topic
-names in a UNSUBSCRIBE message are not compressed. The table below shows
-an example payload.</p>
+<p>Client unsubscribes từ một danh sách topics named trong phần payload. Chuỗi được encode theo dạng UTF và được đóng gói liên tiếp nhau. Các topic name trong message UNSUBSCRIBE sẽ không được nén. Bảng dưới đây mô tả một ví dụ của payload.</p>
 <table>
 	<tbody>
 		<tr>
@@ -3339,7 +3337,7 @@ an example payload.</p>
 		</tr>
 	</tbody>
 </table>
-<p>The table below shows the format of this payload.</p>
+<p>Bảng sau chỉ ra định dạng của payload.</p>
 <table class="bits">
 	<thead>
 		<tr>
@@ -3594,9 +3592,8 @@ confirm receipt of an <a href="#unsubscribe">UNSUBSCRIBE</a> message.</p>
 </dl>
 
 <h3>Variable header</h3>
-<p>The variable header contains the Message ID for the <a href="#unsubscribe">UNSUBSCRIBE</a>
-message that is being acknowledged. The table below shows the format of
-the variable header.</p>
+<p>Phần header thay đổi được chứa Message ID cho message <a href="#unsubscribe">UNSUBSCRIBE</a>
+được chấp nhận. Bảng sau chỉ ra phần header thay đổi được.</p>
 <table class="bits">
 
 	<thead>
@@ -3628,17 +3625,16 @@ the variable header.</p>
 </table>
 
 <h3>Payload</h3>
-<p>There is no payload.</p>
+<p>Không có payload.</p>
 
 
 
 <h2 id="pingreq">3.12. PINGREQ - PING request</h2>
-<p>The PINGREQ message is an "are you alive?" message that is sent
-from a connected client to the server.</p>
-<p>See <a href="#keep-alive-timer">Keep Alive timer</a> for more details.</p>
+<p>Message PINGREQ có nghĩa là message "Ông vẫn sống đấy chứ?" được gửi từ một client đã kết nối đến server.</p>
+<p>Xem <a href="#keep-alive-timer">Keep Alive timer</a> để biết thêm chi tiết.</p>
 
 <h3>Fixed header</h3>
-<p>The table below shows the fixed header format.</p>
+<p>Bảng sau chỉ ra định dạng của phần header cố định.</p>
 <table class="bits">
 	<thead>
 		<tr>
@@ -3696,27 +3692,27 @@ from a connected client to the server.</p>
 		</tr>
 	</tbody>
 </table>
-<p>The DUP, QoS, and RETAIN flags are not used.</p>
+<p>Các cờ DUP, QoS, and RETAIN không được sử dụng.</p>
 
 <h3>Variable header</h3>
-<p>There is no variable header.</p>
+<p>Không có phần header thay đổi.</p>
 
 <h3>Payload</h3>
 
-<p>There is no payload.</p>
+<p>Không có payload.</p>
 
 <h3>Response</h3>
-<p>The response to a PINGREQ message is a PINGRESP message.</p>
+<p>Trả lời cho message PINGREQ là một message PINGRESP.</p>
 
 
 <h2 id="pingresp">3.13. PINGRESP - PING response</h2>
-<p>A PINGRESP message is the response sent by a server to a <a href="#pingreq">PINGREQ</a>
-message and means "yes I am alive". </p>
-<p>See <a href="#keep-alive-timer">Keep Alive timer</a> for more details.</p>
+<p>Một message PINGRESP được gửi từ server cho một message <a href="#pingreq">PINGREQ</a>
+và nó có nghĩa là "Vâng, tôi vẫn sống đây". </p>
+<p>Xem thêm <a href="#keep-alive-timer">Keep Alive timer</a> để biết thêm chi tiết.</p>
 
 <h3>Fixed header</h3>
 
-<p>The table below shows the fixed header format:</p>
+<p>Bảng sau chỉ ra định dạng của một header cố định:</p>
 <table class="bits">
 	<thead>
 		<tr>
@@ -3774,32 +3770,28 @@ message and means "yes I am alive". </p>
 		</tr>
 	</tbody>
 </table>
-<p>The DUP, QoS, and RETAIN flags are not used.</p>
+<p>Các cờ DUP, QoS, and RETAIN không sử dụng.</p>
 
 <h3>Payload</h3>
-<p>There is no payload.</p>
+<p>Không có payload.</p>
 
 <h3>Variable header</h3>
-<p>There is no variable header.</p>
+<p>Không có phần header thay đổi.</p>
 
 
 
 
 <h2 id="disconnect">3.14. DISCONNECT - Disconnect notification</h2>
-<p>The DISCONNECT message is sent from the client to the server to
-indicate that it is about to close its TCP/IP connection. This allows
-for a clean disconnection, rather than just dropping the line.</p>
+<p>Message DISCONNECT được gửi từ client đến server để báo rằng nó sẽ đóng kết nối TCP/IP đang kết nối. Cái này cho phép một clean disconnection, chứ không chỉ là hủy kết nối.</p>
 
-<p>If the client had connected with the 
-<a href="#clean-session-flag">clean session flag</a> set, then all previously 
-maintained information about the client will be discarded.</p>
+<p>Nếu client đang kết nối với cờ 
+<a href="#clean-session-flag">clean session </a> được set, thì tất các những thông tin trước đó về client sẽ bị quên hết.</p>
 
-<p>A server should not rely on the client to close
-the TCP/IP connection after receiving a DISCONNECT.</p>
+<p>Một server không nên để việc đóng kết nối này cho phía client sau khi nhận message DISCONNECT.</p>
 
 <h3>Fixed header</h3>
 
-<p>The fixed header format is shown in the table below.</p>
+<p>Định dạng của phần header cố định được chỉ ra dưới bảng sau.</p>
 <table class="bits">
 	<thead>
 		<tr>
@@ -3857,29 +3849,25 @@ the TCP/IP connection after receiving a DISCONNECT.</p>
 		</tr>
 	</tbody>
 </table>
-<p>The DUP, QoS, and RETAIN flags are not used in the DISCONNECT
-message.</p>
+<p>Các cờ DUP, QoS, and RETAIN không được sử dụng trong message DISCONNECT.</p>
 
 <h3>Payload</h3>
-<p>There is no payload.</p>
+<p>Không có payload.</p>
 
 <h3>Variable header</h3>
-<p>There is no variable header.</p>
+<p>Không có phần header thay đổi.</p>
 </div>
 <div id="flows-section">
 <h1 id="flows">4. Flows</h1>
 <h2 id="qos-flows">4.1. Quality of Service levels and flows</h2>
-<p>MQTT delivers messages according to the levels defined in a
-Quality of Service (QoS). The levels are described below:</p>
+<p>MQTT phân phối các message dựa trên mức độ tin cậy được định nghĩa là
+Quality of Service (QoS). Các level được định nghĩa như sau:</p>
 
 <dl>
 
 	<dt>QoS level 0: At most once delivery</dt>
-	<dd>The message is delivered according to the best efforts of the
-	underlying TCP/IP network. A response is not expected and no retry
-	semantics are defined in the protocol. The message arrives at the
-	server either once or not at all.
-	<p>The table below shows the QoS level 0 protocol flow.</p>
+	<dd>Message được phân phối dựa trên best efforts của tầng mạng TCP/IP bên dưới. Một response sẽ không được expected and không có một ngữ cảnh về việc gửi lại được định nghĩa trong giao thức. Các message đến server hoặc chỉ 1 lần hoặc không bao giờ.
+	<p>Bảng dưới đây chỉ ra chi tiết về QoS level 0 trong luồng protocol.</p>
 	<table class="flow">
 		<thead>
 			<tr>
@@ -3904,16 +3892,11 @@ Quality of Service (QoS). The levels are described below:</p>
 
 
 	<dt>QoS level 1: At least once delivery</dt>
-	<dd>The receipt of a message by the server is acknowledged by a
-	PUBACK message. If there is an identified failure of either the
-	communications link or the sending device, or the acknowledgement
-	message is not received after a specified period of time, the sender
-	resends the message with the DUP bit set in the message header. The
-	message arrives at the server at least once. Both SUBSCRIBE and
-	UNSUBSCRIBE messages use QoS level 1.
-	<p>A message with QoS level 1 has a Message ID in the message
-	header.</p>
-	<p>The table below shows the QoS level 1 protocol flow.</p>
+	<dd>Việc nhận được message bên phía server được xác nhận bởi một message
+	PUBACK. Nếu có lỗi do kết nối hoặc gửi đến device, hoặc message xác nhận không nhận được sau một khoảng thời gian nhất định, sender sẽ gửi lại message với và set DUP bit trong phần header của message header. Message đến server ít nhất 1 lần. Cả message SUBSCRIBE and
+	message UNSUBSCRIBE đều sử dụng QoS level là 1.
+	<p>Một message mà có QoS level 1 trong phần header sẽ giống như bảng sau.</p>
+	<p>Bảng dưới đây chỉ ra luồng protocol khi QoS level set bằng 1.</p>
 
 	<table class="flow">
 
@@ -3952,18 +3935,15 @@ Quality of Service (QoS). The levels are described below:</p>
 
 		</tbody>
 	</table>
-	<p>If the client does not receive a PUBACK message (either within a
-	time period defined in the application, or if a failure is detected and
-	the communications session is restarted), the client may resend the <a href="#publish">PUBLISH</a> message with the DUP flag set.</p>
-	<p>When it receives a duplicate message from the client, the server
-	republishes the message to the subscribers, and sends another PUBACK
-	message.</p>
+	<p>Nếu client không nhận messge PUBACK (hoặc là trong một khoảng thời gian được định nghĩa bởi ứng dụng, hoặc nếu có lỗi xảy ra và
+	communications session bị restart), client có thể gửi lại message <a href="#publish">PUBLISH</a> với cờ DUP được set.</p>
+	<p>Khi nhận được một message lặp lại từ phía client, server sẽ publish các message đến các subscribers, và gửi một message PUBACK
+	khác.</p>
 	</dd>
 
 
 	<dt>QoS level 2: Exactly once delivery</dt>
-	<dd>Additional protocol flows above QoS level 1 ensure that
-	duplicate messages are not delivered to the receiving application. This
+	<dd>Một luồng được thêm vào luồng QoS level bằng 1 ở trên để đảm bảo rằng message bị lặp lại không bị chuyển đến ứng dụng. This
 	is the highest level of delivery, for use when duplicate messages are
 	not acceptable. There is an increase in network traffic, but it is
 	usually acceptable because of the importance of the message content.
