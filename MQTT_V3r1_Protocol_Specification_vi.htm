@@ -1,6 +1,6 @@
 <!--?xml version="1.0" encoding="utf-8"?-->
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"><head>
-<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
 <title>MQTT V3.1 Protocol Specification</title>
 <link rel="stylesheet" href="MQTT_V3r1_Protocol_Specification_files/style.css" type="text/css">
 </head>
@@ -3943,16 +3943,13 @@ Quality of Service (QoS). Các level được định nghĩa như sau:</p>
 
 
 	<dt>QoS level 2: Exactly once delivery</dt>
-	<dd>Một luồng được thêm vào luồng QoS level bằng 1 ở trên để đảm bảo rằng message bị lặp lại không bị chuyển đến ứng dụng. This
-	is the highest level of delivery, for use when duplicate messages are
-	not acceptable. There is an increase in network traffic, but it is
-	usually acceptable because of the importance of the message content.
-	<p>A message with QoS level 2 has a Message ID in the message
-	header.</p>
-	<p>The table below shows the QoS level 2 protocol flow.
-	There are two semantics available for how a PUBLISH flow should be handled
-	by the recipient. They affect the point within the flow that the message
-   is made available to the subscribers. The choice of semantic is implementation
+	<dd>Một luồng được thêm vào luồng QoS level bằng 1 ở trên để đảm bảo rằng message bị lặp lại không bị chuyển đến ứng dụng. 
+	Đây là mức độ cao nhất khi khi phân phối message, không message lặp nào được chấp nhận. Lưu lượng mạng sẽ tăng lên, nhưng 
+	nó thường được chấp nhận vì mức độ quan trọng của nội dung message.
+	<p>Một message với QoS level = 2 có một Message ID trong phần header của nó.</p>
+	<p>Bảng sau chỉ ra luồng của protocol khi QoS level = 2.
+	Có 2 semantics để xác định làm thế nào luồng PUBLISH được handler bởi các bên. Chúng ảnh hưởng đến các điểm nằm trong flow 
+	đưa các messaage đến các subscriber. The choice of semantic is implementation
 	specific and does not affect the guarantees of a QoS level 2 flow.</p>
 <p>
 	<table class="flow">
