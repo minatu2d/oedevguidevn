@@ -3949,8 +3949,8 @@ Quality of Service (QoS). Các level được định nghĩa như sau:</p>
 	<p>Một message với QoS level = 2 có một Message ID trong phần header của nó.</p>
 	<p>Bảng sau chỉ ra luồng của protocol khi QoS level = 2.
 	Có 2 semantics để xác định làm thế nào luồng PUBLISH được handler bởi các bên. Chúng ảnh hưởng đến các điểm nằm trong flow 
-	đưa các messaage đến các subscriber. The choice of semantic is implementation
-	specific and does not affect the guarantees of a QoS level 2 flow.</p>
+	đưa các messaage đến các subscriber. Việc lựa chọn semantis nào thì phụ thuộc vào thực thi của giao thức 
+	và không ảnh hưởng đến tính đảm bảo của luồng QoS level = 2 .</p>
 <p>
 	<table class="flow">
 		<thead>
@@ -4008,58 +4008,49 @@ Quality of Service (QoS). Các level được định nghĩa như sau:</p>
 		</tbody>
 	</table>
 </p>
-	<p>If a failure is detected, or after a defined time period, the
-   protocol flow is retried from the last unacknowledged protocol message; either
-   the PUBLISH or PUBREL. See <a href="#retry">Message delivery retry</a> for more
-   details. The additional protocol flows ensure that the message is delivered to
-	subscribers once only.</p>
+	<p>Nếu phát hiện lỗi, hoặc sau một khoảng thời gian nhất định,luồng protocol sẽ được thực hiện lại từ kết quả của message xác nhận cuối cùng; 
+	hoặc là PUBLISH , hoặc là PUBREL. Xem <a href="#retry">Message delivery retry</a> để biết thêm chi tiết. 
+	Luồng protocol đảm bảo rằng message đến các subscriber chỉ đúng 1 lần.</p>
 	</dd>
 
 </dl>
 
 <h3>Assumptions for QoS levels 1 and 2</h3>
-<p>In any network, it is possible for devices or communication links
-to fail. If this happens, one end of the link might not know what is
-happening at the other end; these are known as <i>in doubt</i> windows.
-In these scenarios assumptions have to be made about the reliability of
-the devices and networks involved in message delivery.</p>
-<p>MQTT assumes that the client and server are generally reliable,
-and that the communications channel is more likely to be unreliable. If
-the client device fails, it is typically a catastrophic failure, rather
-than a transient one. The possibility of recovering data from the device
-is low. Some devices have non-volatile storage, for example flash ROM.
-The provision of more persistent storage on the client device protects
-the most critical data from some modes of failure.</p>
-<p>Beyond the basic failure of the communications link, the failure
-mode matrix becomes complex, resulting in more scenarios than the
-specification for MQTT can handle.</p>
+<p>Trong môi trường mạng, việc đứt kết nối, hay có lỗi kết nối là điều luôn có khả năng xảy ra. 
+Nếu xảy ra điều này, một bên sẽ không biết có điều gì xảy ra với bên đang giao tiếp với mình; 
+Nó được gọi là của sổ<i>in doubt(nghi ngờ)</i>.
+Trong tình huống của giao thức này, giả định rằng là mọi thứ được thực hiện trên mức độ tin tưởng vào network, device,...</p>
+<p>MQTT giả định rằng client và server nói chung là tin tưởng được nhau,
+và và các kênh truyền (communications channel) thì sẽ được coi như là không tin tưởng. Nếu
+thiết bị phía client gặp lỗi, thì thông thường nó sẽ là một lỗi nghiêm trọng, chứ không phải là một lỗi có thể bỏ qua được. 
+Khả năng phục hồi dữ liệu từ thiết bị gặp lỗi là thấp. Một vài thiết bị có trang bị cả non-volatile storage, ví dụ flash ROM.
+Việc trang bị thêm persistent storage trên thiết bị phía client sẽ bảo vệ hầu hết các dữ liệu quan trọng trong một vài trường hợp lỗi.</p>
+<p>Hiểu những điều cơ bản về các lỗi có thể phát sinh trong the communications link, ma trận các lỗi sẽ trở nên phức tạp, 
+Dẫn đến các tình huống sẽ phát sinh vượt quá phạm vi mà MQTT có thể handle.</p>
 
 <h2 id="retry">4.2. Message delivery retry</h2>
-<p>Although TCP normally guarantees delivery of packets, there
-are certain scenarios where an MQTT message may not be received.
-In the case of MQTT messages that expect a response (QoS &gt;0 PUBLISH, PUBREL, SUBSCRIBE,
-UNSUBSCRIBE), if the response is not received within a certain time period,
-the sender may retry delivery. The sender should set the <a href="#dup-flag">DUP</a> flag
-on the message.</p>
-<p>The retry timeout should be a configurable option. However care must be taken to 
-ensure message delivery does not timeout while it is still being sent. For example, sending a
-large message over a slow network will naturally take longer than a small message over a fast network.
-Repeatedly retrying a timed-out message could often make matters worse so a strategy of increasing the
-timeout value across multiple retries should be used.
+<p>Mặc dù TCP thông thường đảm bảo việc giao nhận của các packets, nhưng cũng có nhiều tình huống mà message MQTT không được nhận.
+Trong trường hợp của message MQTT, nó yêu cầu một response (bằng QoS >0 PUBLISH, PUBREL, SUBSCRIBE,
+UNSUBSCRIBE), nếu không nhận được response trong một khoảng thời gian nhất định,
+thì bên gửi có thể thực hiện lại việc giao nhận. Và bên gửi cũng set cờ <a href="#dup-flag">DUP</a>
+trong message gửi lại đó.</p>
+<p>Time để thực hiện việc gửi lại này nên được set bằng các tùy chọn cấu hình. Tuy nhiên phải các rằng message không bị timeout chừng nó nó vẫn đang được gửi. 
+Ví dụ, gửi một message lớn qua trong một mạng tốc độ chập đương nhiên sẽ mất thời gian lâu hơn việc gửi một message nhỏ tront một mạng tốc độ nhanh.
+Việc gửi đi gửi lại các message bị timeout có thể dẫn đến kết quả rất tồi tệ vì thế sử dụng một chiến lược như là tăng giá trị timeout sau mỗi lần retry qua mỗi lần gửi lại thì nên được cân nhắc.
 </p>
-<p>When a client reconnects, if it is not marked <a href="#clean-session-flag">clean session</a>,
-both the client and server should redeliver any previous in-flight messages.</p>
-<p>Other than this "on reconnect" retry behaviour, clients are not required to
-retry message delivery. Brokers, however, should retry any unacknowledged message.</p>
+<p>Khi client kết nối lại, nếu nó không được đánh dấu là <a href="#clean-session-flag">clean session</a>,
+thì cả client và servr nên tổ chức giao nhận các message lơ lửng trước đó.</p>
+<p>Ngoài hành động "on reconnect" này ra, client sẽ không được yêu cầu nhận các message trước đó. 
+Tuy nhiên, Brokers, nên gửi lại bất cứ message nào mà chưa được báo đã nhận.</p>
 
 <h2 id="ordering">4.3. Message ordering</h2>
-<p>Message ordering can be affected by a number of factors, including
-how many in-flight <a href="#publish">PUBLISH</a> flows a client allows and
-whether the client is single- or multi-threaded. For purposes of discussion, clients are 
-assumed to be single-threaded at the point packets are written to and read from the network.</p>
-<p>For an implementation to provide any guarantees regarding the ordering of messages
-it must ensure each stage of the message delivery flows are completed in the order they were started. 
-For example, in a series of QoS level 2 flows, the PUBREL flows must be sent in the same order as the original
+<p>Thứ tự các message có thể bị ảnh hưởng của vô vàn các yếu tố, như là
+Có bao nhiều message <a href="#publish">PUBLISH</a> lơ lửng trong luồng mà một client chấp nhận, rồi thì
+phía client và single-thread hay multi-thread. Trong giới hạn của protocol, client được giả định là 
+single-threaded trên quan điểm về packet khi nhận và gửi từ network.</p>
+<p>Một thực thi của giao thức  khi cung cấp phải đảm bảo dù với bất cứ thứ tự nào của messsage 
+nó phải chắc chắn rằng luồng giao nhận được thực hiện hoàn tất theo thứ tự nó đã bắt đầu
+Ví dụ, trong luồng QoS level 2, luồng PUBREL phải được gửi cùng flow với luồng
 PUBLISH flows:</p>
 
 <table class="flow">
@@ -4134,12 +4125,11 @@ PUBLISH flows:</p>
 			</tr>
 		</tbody>
 	</table>
-<p>The number of in-flight messages permitted also has an effect on the type of guarantees that can be made:
+<p>Số lượng messsage lơ lửng được cho phép cũng có hiệu quả trong các loại đảm bảo mà có thể đưa ra:
 </p><ul>
-<li><p>With an in-flight window of 1, each delivery flow is completed before the next one starts. This guarantees
-messages are delivered in the order they were submitted.</p></li>
-<li><p>With an in-flight window greater than 1, message ordering can only be guaranteed within
-the QoS level.</p></li>
+<li><p>Với giới hạn cho các message in-flight là 1, thì mỗi luồng giao nhận sẽ được hoàn thành trước khi bước tiếp theo bắt đầu. Điều này đảm bảo
+các message được nhận theo đúng thứ tự chúng được đưa lên.</p></li>
+<li><p>Với giới hạn cho các message in-flight lớn hơn 1, thứ tự message chỉ đảm bảo trong 1 vơi một QoS Level nhất định.</p></li>
 </ul>
 <p></p>
 </div> <!-- /flows -->
@@ -4147,78 +4137,62 @@ the QoS level.</p></li>
 <div id="appendices">
 <div id="appendix-a">
 <h1>Appendix A - Topic wildcards</h1>
-<p>A subscription may contain special characters, which allow you to subscribe to 
-multiple topics at once.</p>
-<p>The topic level separator is used to introduce structure into the topic, and
-can therefore be specified within the topic for that purpose.  The multi-level
-wildcard and single-level wildcard can be used for subscriptions, but they
-cannot be used within a topic by the publisher of a message.</p>
+<p>Một subscription có thể có thể chứa nhiều kí tự đặc biệt, cho phép các subscriber có thể subscribe nhiều topic một lúc.</p>
+<p>Kí tự phân các topic level được sử dụng để phân tác cấu trúc một topic, và
+và có thể được chỉ định bên trong topic đó.  Một
+wildcard nhiều level và wildcard đơn level có thể được sử dụng trong các subscriptions, nhưng chúng không thể được sử dụng 
+trong một topic trong message của publisher.</p>
 <dl>
 	<dt>Topic level separator</dt>
-	<dd>The forward slash (/) is used to separate each level within
-	a topic tree and provide a hierarchical structure to the topic space. The
-	use of the topic level separator is significant when the two wildcard characters
-	are encountered in topics specified by subscribers.</dd>
+	<dd>Kí tự slash xuôi (/) được sử dụng để phân tách mỗi level bên trong
+	một cây topic và cung cấp một cấp trúc phân cấp cho không gian. Việc sử dụng kí tự phân tách này có ý nghĩa khi 2 kí tự phân tách
+	mâu thuẫn nhau
+	.</dd>
 	
 	<dt>Multi-level wildcard</dt>
-	<dd><p>The number sign (#) is a wildcard character that matches
-	any number of levels within a topic. For example, if you subscribe to <span><span class="filepath">finance/stock/ibm/#</span></span>, you receive
-	messages on these topics:</p>
+	<dd><p>Kí tự thăng (#) là kí tự đại diện và nó matches với bất kì level nào trong topic. Ví dụ, nếu bạn subscribe <span><span class="filepath">finance/stock/ibm/#</span></span>, bạn sẽ nhận được
+	các message ở trong topic sau:</p>
 	<pre>   finance/stock/ibm
    finance/stock/ibm/closingprice
    finance/stock/ibm/currentprice</pre>
 	<p>The multi-level wildcard
-	can represent zero or more levels. Therefore, <em>finance/#</em> can also match
-	the singular <em>finance</em>, where <em>#</em> represents zero levels. The topic
-	level separator is meaningless in this context, because there are no levels
-	to separate.  </p>
-	<p> The multi-level wildcard can
-	be specified only on its own or next to the topic level separator character.
-	Therefore, <em>#</em> and <em>finance/#</em> are both valid, but <em>finance#</em> is
-	not valid. The multi-level wildcard must be the last character
-	used within the topic tree. For example, <em>finance/#</em> is valid but <em>finance/#/closingprice</em> is
-	not valid.</p></dd>
+	có thể biểu diễn zero hoặc nhiều level. Vì vậy, <em>finance/#</em> có thể match riêng cho<em>finance</em>, khi đó <em>#</em> biểu diễn level zero. Kí tự phân tách level không có ý nghĩa để phân tách trong trường hợp này.  </p>
+	<p> The multi-level wildcard có thể
+	có thể chỉ định chính nó hoặc gần với kí tự đại diện topic sau nó.
+	Vì thế, <em>#</em> và <em>finance/#</em> đều hợp lệ, nhưng <em>finance#</em> không hợp lệ. 
+	Kí tự đại diện multi-level phải là kí tự cuối cùng trong dãy miêu tả topc. Ví dụ, <em>finance/#</em> là hợp lệ nhưng <em>finance/#/closingprice</em> thì không hợp lệ.</p></dd>
 
 	<dt>Single-level wildcard</dt>
-	<dd><p>The plus sign (+) is a wildcard character that matches only one topic
-	level. For example, <em>finance/stock/+</em> matches <em>finance/stock/ibm</em> and <em>finance/stock/xyz</em>,
-	but not <em>finance/stock/ibm/closingprice</em>. Also, because the single-level
-	wildcard matches only a single level, <em>finance/+</em> does not match <em>finance</em>.</p>
-	<p>The single-level wildcard can be used at any level in the topic tree, and in conjunction
-	with the multilevel wildcard. It must be used next to the topic level separator, 
-   except when it is specified on its own. Therefore, <em>+</em> and <em>finance/+</em> are
-	both valid, but <em>finance+</em> is not valid. The single-level
-	wildcard can be used at the end of the topic tree or within the topic tree.
-	For example, <em>finance/+</em> and <em>finance/+/ibm</em> are both valid.</p>
+	<dd><p>Dấu cộng (+) là một kí tự đại diện nó phù hợp chỉ với một topic level. Ví dụ, <em>finance/stock/+</em> sẽ matches <em>finance/stock/ibm</em> và <em>finance/stock/xyz</em>,
+	nhưng không matches <em>finance/stock/ibm/closingprice</em>. Cũng bởi vì, kí tự đại diện single-level
+	 chỉ matches với single level, <em>finance/+</em> sẽ không matches <em>finance</em>.</p>
+	<p>Kí tự đại diện single-level có thể được sử dụng ở bất kì level trong topic tree, và có thể kết hợp với multi-level wildcard. 
+	Nó phải nằm sau một kí tự phân cách level, 
+   trừ khi nó chỉ định chính nó. Vì thế, <em>+</em> and <em>finance/+</em> thì hợp lệ, nhưng <em>finance+</em> thì không hợp lệ. Kí tự single-level
+	có thể sử dụng ở cuối topic tree hoặc là bên trong topic tree.
+	Ví dụ, <em>finance/+</em> và <em>finance/+/ibm</em> là không hợp lệ.</p>
 	</dd>
 </dl>
 
 
 <h2>Topic semantics and usage</h2>
-<p>When you build an application,
-the design of the topic tree should take into account the following principles
-of topic name syntax and semantics:</p>
+<p>Khi build một ứng dụng,
+việc thiết kế cây topic nên tính đến các nguyên tắc sau của tên topic name và semantics:</p>
 
 <ul>
-	<li>A topic must be at least one character long.</li>
-	<li>Topic names are case sensitive.  For example, <em>ACCOUNTS</em> and <em>Accounts</em> are
-	two different topics.</li>
-	<li>Topic names can include the space character.  For example, <em>Accounts
-	payable</em> is a valid topic.</li>
-	<li>A leading "/" creates a distinct topic.  For example, <em>/finance</em> is
-	different from <em>finance</em>. <em>/finance</em> matches "+/+" and "/+", but
-	not "+".</li>
-	<li>Do not include the null character (Unicode <code>\x0000</code>) in
-	any topic.</li>
+	<li>Một topic nên có ít nhất 1 kí tự.</li>
+	<li>Topic name là phân biệt chữ hoa, chữ thường. Ví dụ, <em>ACCOUNTS</em> and <em>Accounts</em> là 2 cái tên khác nhau.</li>
+	<li>Topic name có thể bao gồm dấu cách.  Ví dụ, <em>Accounts
+	payable</em> là hợp lệ.</li>
+	<li>Việc bắt đầu bằng dấu "/" sẽ tạo ra một topic khác.  Ví dụ, <em>/finance</em> sẽ khác với <em>finance</em>. <em>/finance</em> sẽ matches "+/+" and "/+", nhưng
+	không matches với "+".</li>
+	<li>Đừng có đưa kí tự null (Unicode <code>\x0000</code>) vào trong bất kì topic nào.</li>
 </ul>
 
-<p>The following principles apply to the construction and content of a topic
-tree:</p>
+<p>Những nguyên tắc dưới đấy được áp dụng cho việc tạo và cho nội dung của cây topic :</p>
 <ul>
-	<li>The length is limited to 64k but within that there are no limits to the
-	number of levels in a topic tree.</li>
-	<li>There can be any number of root nodes; that is, there can be any number
-	of topic trees.</li>
+	<li>Độ dài được giới hạn là 64k nhưng bên trong đó không có giới hạn về số level của topic.</li>
+	<li>Bao nhiêu root nodes cũng được; bao nhiêu topic tree cũng được.</li>
 </ul>
 </div>
 
