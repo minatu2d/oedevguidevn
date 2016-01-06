@@ -2,7 +2,7 @@
 Vietnamese translation of development guides for open embedded 
 
 Open Embedded is based on reference distribution Yocto Project
-[link to Yocto project!]https://www.yoctoproject.org/
+https://www.yoctoproject.org/
 
 #Nội dung chính#
 Tập hợp các hướng dẫn về việc phát triển OpenEmbedded (một phần của Yocto Project)
