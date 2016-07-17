@@ -16,33 +16,33 @@
 </div>
 
 <div id="abstract">
-<h2>Trừu tượng</h2>
+<h2>Khái quát chung nhất</h2>
 <p>
-MQ Telemetry Transport (MQTT) (tạm dịch là Giao vận tầm xa) là giao thức truyền message theo mô hình cung cấp/thuê bao publish/subcribe. Nó dựa trện một Broker (điểm trung gian) "nhẹ" (khá ít xử lý), và được thiết kế có tính mở 
-(không đăng trưng cho ứng dụng nào), đơn giản, "nhẹ", và dễ để implement. Những đặc trưng này khiến MQTT rất lý tưởng để sử dụng trong các môi trường bị giới hạn tài nguyên như: 
+MQ Telemetry Transport (MQTT) (tạm dịch là Giao vận tầm xa) là giao thức truyền message theo mô hình cung cấp/thuê bao (publish/subcribe) qua một điểm trung gian (Broker), có những đặc điểm như "nhẹ" (khá ít xử lý), và được thiết kế có tính mở 
+(tức là không đăng trưng cho ứng dụng cụ thể nào), đơn giản, dễ dàng cho phát triển). Những đặc trưng này khiến MQTT rất lý tưởng để sử dụng trong môi trường giới hạn tài nguyên tính toán, cũng như khả năng truyền dữ liệu như: 
 </p>
 <ul>
-<li>Những nơi mà giá network đắt hoặc băng thông thấp, hay thiếu tin cậy
-</li><li>Khi chạy trên một thiết bị nhúng bị giới hạn về tài nguyên tốc độ và bộ nhớ
+<li>Những nơi mà giá truyền dữ liệu đắt, có băng thông thấp, hay thiếu tin cậy
+</li><li>Khi chạy trên một thiết bị nhúng giới hạn về tốc độ xử lý và bộ nhớ
 </li></ul>
 <p>
-Các đặc trưng của giao thức bao gồm:
+Một số đặc trưng của giao thức bao gồm:
 </p>
 <ul>
-<li>Dạng truyền message cung cấp/thuê bao (publish/subcribe) cung cấp việc truyền tin phân tán 1-nhiều and tách biệt các ứng dụng</li>
-<li>Việc truyền message là luôn không quan tâm đến nội dung nó truyền/li>
-<li>Dựa trên nền TCP/IP để cung cấp đừong truyền</li>
-<li>Có 3 loại QoS được đưa ra:
+<li>Dạng truyền message theo mô hình cung cấp/thuê bao (publish/subcribe) cung cấp việc truyền tin phân tán 1-nhiều (khi tham gia giao thức, một đối tượng gửi có thể gửi đến nhiều đối tượng nhận cùng lúc) và tách biệt với phần ứng dụng (trong mô hình này, thì người gửi message là publisher, còn người nhận là subscriber)</li>
+<li>Việc truyền message là luôn không quan tâm đến nội dung được truyền</li>
+<li>Thực hiện truyền message trên nền TCP/IP</li>
+<li>Có 3 cấp độ của QoS (Qualities of Service : mức độ đảm bảo) được đưa ra:
 <ul>
-<li>"Hầu như chỉ 1 lần ", message được truyền nhận dựa hoàn toàn vào tính tin cận của TCP/IP. Việc mất hoặc lặp message có thể xảy ra. Ở QoS này, có thể ví dụ 1 trường hợp sử dụng: như trong môi trừong sensor mà việc mất 1 gói dữ liệu tại 1 thời điểm không ảnh hưởng đến toàn bộ quá trình.
+<li>"Hầu như chỉ 1 lần ", message được truyền nhận dựa hoàn toàn vào tính tin cận của TCP/IP. Việc mất hoặc lặp message có thể xảy ra. Ở QoS này, có thể ví dụ 1 trường hợp sử dụng như: trong môi trường sử dụng sensor (nhiệt độ chẳng hạn), việc mất 1 gói dữ liệu (message) tại 1 thời điểm không ảnh hưởng đến toàn bộ quá trình sử dụng dữ liệu của sensor đó.
 </li>
-<li>"Ít nhất 1 lần", các message được đảm bảo nhận được nhưng có thể xảy ra lặp</li>
-<li>"Chính xác chỉ 1 lần", message được đảm bảo đến nơi đúng 1 lần. Ở level này, các hệ thống thanh toán, nơi mà việc lặp hay mất message có thể gây ra việc tính tiền bị sai. 
+<li>"Ít nhất 1 lần", các message được đảm bảo được nhận (bởi subcriber) nhưng có thể xảy ra gửi lặp.</li>
+<li>"Chính xác chỉ 1 lần", message được đảm bảo đến nơi đúng 1 lần. Cấp độ này được ứng dụng ở  các hệ thống thanh toán, nơi mà việc lặp hay mất message có thể gây ra việc tính tiền bị sai hay những hậu quả nghiêm trọng khác.
 </li>
 </ul>
 </li>
-<li>Dữ liệu bao bọc dữ liệu truyền (overhead) nhỏ (độ dài cố định luôn là 2 byte), and là gia thức giảm đến mức tối thiểu traffic đường truyền. </li>
-<li>Một cơ chế để thông báo đến các thuê bao khi đường truyền bị đứt bất thường, sử dụng Last Will và Testament feature.</li>
+<li>Phần bao bọc dữ liệu truyền (overhead) nhỏ (header cố định chỉ là 2 byte), và được giảm đến mức tối thiểu để giảm tải cho đường truyền. </li>
+<li>Một cơ chế để thông báo đến các thuê bao (subscriber) khi đường truyền bị đứt bất thường, đó là sử dụng khả năng thông báo bằng message Last Will (thông điệp cuối) và Testament feature.</li>
 </ul>
 </div>
 <div id="copyright">
@@ -91,7 +91,7 @@ Authors.
 	<li><a href="#intro">1. Giới thiệu</a>
 
 		<ul>
-			<li><a href="#new">1.1. Thay đổi mới</a></li>
+			<li><a href="#new">1.1. Thay đổi so với phiên bản trước</a></li>
 		</ul>
 	</li>
 	<li><a href="#msg-format">2. Định dạng của message</a>
@@ -125,14 +125,14 @@ Authors.
 		<li><a href="#disconnect">3.14. DISCONNECT</a></li>
 	</ul>
 	</li>
-	<li><a href="#flows">4. Flows</a>
+	<li><a href="#flows">4. Các luồng đặc trưng</a>
 	<ul>
-		<li><a href="#qos-flows">4.1. Quality of Service levels and flows</a></li>
+		<li><a href="#qos-flows">4.1. Chi tiết về QoS</a></li>
 		<li><a href="#retry">4.2. Message delivery retry</a></li>
 		<li><a href="#ordering">4.3. Message ordering</a></li>
    </ul>
    </li>
-   <li><a href="#appendix-a">Appendix A</a></li>
+   <li><a href="#appendix-a">Phụ lục A</a></li>
 	</ul>
 </div>
 
@@ -141,31 +141,31 @@ Authors.
 <h1>1. Giới thiệu</h1>
 <p>Tài liệu đặc tả này được chia làm 3 chương chính:
 </p>
-<ul><li>Định dạng message cho tất cả các packet</li>
+<ul><li>Định dạng message chung cho tất cả các gói dữ liệu (packet hay gói tin) sử dụng trong giao thức</li>
 <li>Chi tiết mỗi loại packet</li>
-<li>Luồng gói tin giữa client và server</li>
+<li>Luồng packet giữa client và server</li>
 </ul>
 <p>
-Thông tin về cách mô tả mỗi topic (1 nhóm các tin nhắn) được cung cấp ở phần appendix.
+Thông tin về cách mô tả topic (chuỗi kí tự đại diện cho một nhóm message) được cung cấp ở phần phụ lục.
 </p>
 
 <div id="new">
-<h2>1.1. Thay đổi mới</h2>
+<h2>1.1. Thay đổi mới so với phiên bản trước</h2>
 <p>Sự thay đổi từ MQTT V3 đến MQTT V3.1:</p>
 <ul>
-	<li>User và password giờ được gửi qua một gói CONNECT</li>
+	<li>User và password giờ có thể được gửi bằng packet CONNECT</li>
 	<li>Thêm mã trả về cho packet CONNACK để sử dụng cho mục đích security</li>
-	<li>Client sẽ không được cho biết về việc các gói chứa command PUBLISH hoặc SUBCRIBE không được xác thực. Một luồng MQTT thông thường sẽ kết thúc thậm chí những command này không được thực hiện. </li>
+	<li>Client sẽ không được cho biết về việc các gói chứa command PUBLISH hoặc SUBCRIBE không được xác thực. Một luồng MQTT thông thường sẽ kết thúc bất kể các gói này có được xử lý bên Client hay không. </li>
 
-	<li>String trong MQTT bây giờ hỗ trợ cả UTF8 thay vì chỉ tập nhỏ ASCII.</li>
+	<li>Chuỗi kí tự sử dụng trong MQTT bây giờ hỗ trợ đầy đủ UTF-8 chứ không chỉ 1 tập nhỏ ASCII như trong phiên bản trước.</li>
 </ul>
-<p>Số version của protocol sẽ có trong gói CONNECT, và trong phiên bản V3r1 này sẽ là 3. Những thực thi MQTT V3 có thể chấp nhận kết nối đến từ version này với độ dài mong muốn vả bỏ quả các thông tin security khác.</p>
+<p>Số version của protocol sẽ có trong packet CONNECT, và trong phiên bản V3r1 này sẽ là 3. Những server thực hiện theo MQTT V3 vẫn chấp nhận được kết nối từ Client của Revision V3r1, cũng như giá trị trường Độ dài còn lại (sẽ nói trong phần Header cố định phía dưới), mà không bị ảnh hưởng của các thông tin được thêm mới.</p>
 </div>
 </div>
 <!--  ===================================================================== -->
 <div id="message-format">
 <h1 id="msg-format">2. Định dạng của message</h1>
-<p>Phần header cho mỗi message của MQTT command luôn chưa 1 phần độ dài cố đinh. Một số message cũng chứa phần độ dài thay đổi được header và dữ liệu truyền đi. Định dạng của mỗi message header được miêu tả trong các section sau:</p>
+<p>Message của mỗi MQTT command đều chứa một phần gọi là header cố định. Một số message cũng chứa thêm phần header có độ dài thay đổi được rồi cả dữ liệu kèm theo nữa. Định dạng cho mỗi phần của message header được miêu tả trong các section sau:</p>
 <h2 id="fixed-header">2.1. Phần header cố định</h2>
 <p>Tất cả các message luôn chứa phần cố định dưới đây:</p>
 
@@ -188,11 +188,11 @@ Thông tin về cách mô tả mỗi topic (1 nhóm các tin nhắn) được cu
 	<tbody>
 		<tr>
 			<td>byte 1</td>
-			<td colspan="4" align="center">Loại Message</td>
-			<td>Cờ DUP</td>
-			<td colspan="2" align="center">QoS level</td>
+			<td colspan="4" align="center">Loại message</td>
+			<td>Cờ báo lặp</td>
+			<td colspan="2" align="center">Mức QoS</td>
 
-			<td>RETAIN</td>
+			<td>Cờ báo giữ lại</td>
 		</tr>
 		<tr>
 			<td>byte 2</td>
@@ -205,30 +205,30 @@ Thông tin về cách mô tả mỗi topic (1 nhóm các tin nhắn) được cu
 
 	<dt>Byte 1</dt>
 	<dd>
-	<p>Chứa loại Message và các cờ (DUP, QoS level, and RETAIN).</p>
+	<p>Chứa loại message và các cờ (Cờ lặp, Mức QoS, and Cờ báo giữ lại).</p>
 	</dd>
 
 
 	<dt>Byte 2</dt>
 
 	<dd>
-	<p>(Ít nhất 1 byte) quy định độ dài còn lại</p>
+	<p>Quy định độ dài còn lại (độ dài nhỏ nhất còn lại là 1 byte) </p>
 	</dd>
 
 </dl>
 <p>Trường này sẽ được nói đến kĩ hơn. Tất cả dữ liệu là big-endian order: Byte cao sẽ đứng trước byte thấp. Một word 16 bit sẽ được truyền trên dây thành 1 byte Most Significant
-(MSB), theo là byte Least Significant(LSB).</p>
+(MSB), theo sau là byte Least Significant(LSB).</p>
 
 
 <h3>Loại Message</h3>
 <b>Vị trí:</b> byte 1, bits 7-4.
 
-<p>Một số 4-bit không dấu diễn tả các giá trị được miêu tả dưới bảng sau:</p>
+<p>Là 1 số 4-bit không dấu chứa giá trị được miêu tả dưới bảng sau:</p>
 <table>
 	<thead>
 		<tr>
 			<th>Từ gợi nhớ</th>
-			<th align="center">Giá trị thứ tự</th>
+			<th align="center">Thứ tự</th>
 			<th>Miêu tả</th>
 		</tr>
 
@@ -254,7 +254,7 @@ Thông tin về cách mô tả mỗi topic (1 nhóm các tin nhắn) được cu
 		<tr>
 			<td>PUBLISH</td>
 			<td align="center">3</td>
-			<td>Xuất bản message</td>
+			<td>Xuất bản message (Client gửi dữ liệu)</td>
 
 		</tr>
 		<tr>
@@ -306,18 +306,18 @@ Thông tin về cách mô tả mỗi topic (1 nhóm các tin nhắn) được cu
 
 			<td>PINGREQ</td>
 			<td align="center">12</td>
-			<td>Request PING </td>
+			<td>Yêu cầu PING </td>
 		</tr>
 		<tr>
 			<td>PINGRESP</td>
 			<td align="center">13</td>
 
-			<td>Response PING</td>
+			<td>Phản hồi PING</td>
 		</tr>
 		<tr>
 			<td>DISCONNECT</td>
 			<td align="center">14</td>
-			<td>Client đang mất kết nối</td>
+			<td>Client mất kết nối</td>
 		</tr>
 
 		<tr>
@@ -329,7 +329,7 @@ Thông tin về cách mô tả mỗi topic (1 nhóm các tin nhắn) được cu
 </table>
 
 <h3>Các cờ</h3>
-<p>Bit còn lại của byte đầu chứa các trường DUP, QoS và RETAIN. Vị trí các bit và ý nghĩa được miêu tả trong bảng dưới đây.</p>
+<p>Các bit còn lại của byte đầu tiên tương ứng sẽ mô tả trạng thái của DUP, QoS và RETAIN. Vị trí các bit và ý nghĩa được miêu tả trong bảng dưới đây.</p>
 <table>
 	<thead>
 		<tr>
@@ -343,19 +343,19 @@ Thông tin về cách mô tả mỗi topic (1 nhóm các tin nhắn) được cu
 		<tr>
 			<td>3</td>
 			<td>DUP</td>
-			<td>Nhận lặp lại</td>
+			<td>Truyền lặp lại </td>
 
 		</tr>
 		<tr>
 			<td>2-1</td>
 			<td>QoS</td>
-			<td>Quality of Service (chất lượng dịch vụ)</td>
+			<td>Quality of Service (mức độ tin cậy)</td>
 		</tr>
 		<tr>
 
 			<td>0</td>
 			<td>RETAIN</td>
-			<td>cờ RETAIN</td>
+			<td>Giữ lại</td>
 		</tr>
 	</tbody>
 </table>
@@ -365,16 +365,16 @@ Thông tin về cách mô tả mỗi topic (1 nhóm các tin nhắn) được cu
 
 	<dd>
 	<p><b>Vị trí:</b> byte 1, bit 3.</p>
-	<p>Cờ này được bật khi client hoặc server đang cố chuyển lại một gói <a href="#publish">PUBLISH</a>, <a href="#pubrel">PUBREL</a>,
-   <a href="#subscribe">SUBSCRIBE</a> or <a href="#unsubscribe">UNSUBSCRIBE</a>. Giá trị này được sử dụng trong các mesage mà có QoSS lớn hơn 0 và yêu cầu ACK. Khi bit DUP được set, phần header thay đổi sẽ chưa Message ID.</p>
-   <p>Nhìn vào giá trị này sẽ biết được gói tin đã nhận được trước đó hay không. Nó không nên sử dụng để tin ngay rằng có duplicates hay không. </p>
+	<p>Cờ này được bật khi client hoặc server đang cố chuyển lại một message <a href="#publish">PUBLISH</a>, <a href="#pubrel">PUBREL</a>,
+   <a href="#subscribe">SUBSCRIBE</a> or <a href="#unsubscribe">UNSUBSCRIBE</a>. Giá trị này được sử dụng trong các mesage mà có QoS lớn hơn 0 và yêu cầu ACK. Khi bit DUP được set, phần header thay đổi sẽ chứa Message ID.</p>
+   <p>Phía nhận xem giá trị này là một gợi ý để tự kiểm tra xem gói tin (có Message ID) ở trên đã chuyển đến trước đó hay không. Nó không nên chỉ dựa vào cờ này mà kết luận cho việc lặp lại</p>
 	</dd>
 
 
 	<dt id="qos-flag">QoS</dt>
 	<dd>
 	<p><b>Vị trí:</b> byte 1, bits 2-1.</p>
-	<p>Cờ này sẽ cho biết độ đảm bảo việc nhận message<a href="#publish">PUBLISH</a>. Giá trị của QoS được miêu tả trong bảng dưới đây.</p>
+	<p>Giá trị này sẽ cho biết mức độ tin cậy của việc truyền message <a href="#publish">PUBLISH</a>. Giá trị của QoS được miêu tả trong bảng dưới đây.</p>
 	<table>
 
 		<thead>
@@ -393,7 +393,7 @@ Thông tin về cách mô tả mỗi topic (1 nhóm các tin nhắn) được cu
 				<td>0</td>
 				<td>Cùng lắm là 1 lần</td>
 
-				<td>Gửi rồi quên ngay</td>
+				<td>Gửi rồi quên ngay (kiểu châm lửa rồi chạy biến)</td>
 				<td>&lt;=1</td>
 			</tr>
 			<tr>
@@ -402,7 +402,7 @@ Thông tin về cách mô tả mỗi topic (1 nhóm các tin nhắn) được cu
 				<td>1</td>
 
 				<td>Ít nhất 1 lần</td>
-				<td>Xác nhận bằng ACK</td>
+				<td>Có xác nhận bằng ACK</td>
 				<td>&gt;=1</td>
 			</tr>
 			<tr>
@@ -426,17 +426,17 @@ Thông tin về cách mô tả mỗi topic (1 nhóm các tin nhắn) được cu
 	</dd>
 
 
-	<dt id="retain-flag">RETAIN</dt>
+	<dt id="retain-flag">Cờ báo giữ lại</dt>
 	<dd>
 	<p><b>Vị trí:</b> byte 1, bit 0.</p>
 	<p>Cờ này chỉ được sử dụng ở message <a href="#publish">PUBLISH</a>.
-   Khi client gửi 1 message PUBLISH đến server, nếu cờ Retain được set (1), thì server phải hiểu rằng nên giữ message này ngay cả sau khi chuyển nó đến các subcribers hiện tại</p>
-   <p>Khi có 1 subcription mới được thiết lập trên 1 topic, message cuối cùng của topic đó nên được gửi đến subscriber với 1 trường Retain được set trong header. Nếu không có messsage nào còn, thì không cần gửi gì hết.</p>
-   <p>Trường này sẽ có ích khi publisher gửi message để báo "report bằng ngoại lệ" ,
-   thỉnh thoảng là nơi giữa các message. Điều này cho phép những subcribers mới nhanh chóng nhận dữ cần thiết, hoặc giá trị kiểu Méo mó có hơn không.</p>
-   <p>Trường hợp mà server chuyển tiếp nội dung vừa nhận được từ một Publisher thì trường Retain sẽ không được set. Điều này sẽ giúp phân biệt được message có từ trước với message mới được publish lên.</p>
-   <p>Message Retained sẽ được giữ thậm chí sau khi restart lại server</p>
-	<p>Server sẽ xóa message được retained nếu nó nhận đựoc một message với payload bằng zero.</p>
+   Khi client gửi 1 message PUBLISH đến server có cờ Retain được set (1), thì server phải hiểu rằng phải giữ message này sau khi đã chuyển nó đến các subcribers hiện tại.</p>
+   <p>Khi có 1 subcription (yêu cầu nhận tin từ 1 subscriber mới) mới được thiết lập đến 1 topic, thì message cuối cùng được lưu lại của topic đó phải được gửi đến subscriber mới này và trường Retain được set (1) trong phần header. Nếu không có messsage nào của topic được lưu giữ trước đó, thì không cần gửi gì hết.</p>
+   <p>Trường này sẽ có ích khi publisher muốn gửi message kiểu "report bằng ngoại lệ" ,
+   thỉnh thoảng cũng được sử dụng giữa các message. Điều này cho phép những subcribers mới nhanh chóng nhận dữ cần thiết, hoặc giá trị kiểu "Hiện tại đến đó".</p>
+   <p>Trường hợp mà server chuyển tiếp nội dung vừa nhận được từ một Publisher thì trường Retain sẽ không được set. Điều này sẽ giúp phân biệt được message có từ trước với message mới được đẩy lên.</p>
+   <p>Message Retained sẽ được cả khi restart lại server</p>
+	<p>Server sẽ xóa message được retained nếu nó nhận đựoc một message với payload bằng zero trên cùng topic.</p>
 	
 	</dd>
 
@@ -446,11 +446,11 @@ Thông tin về cách mô tả mỗi topic (1 nhóm các tin nhắn) được cu
 <h3>Độ dài còn lại</h3>
 <p><b>Vị trí:</b> byte 2.</p>
 
-<p>Miêu tả độ dài bao gồm cả phần header và payload có trong message</p>
-<p>Việc encoding với độ dài thay đổi sử dụng 1 byte để miêu tả độ dài, vì thế độ dài tối đa sẽ là 127. Những message dài hơn sẽ được miêu tả theo cách sau.
-7 bít được dùng để miêu tả giá trị, bít còn lại dùng để miêu tả phía sau còn byte nào miêu tả trường này hay không. Mỗi byte tiếp sau đó cũng như vậy 7 bit để lưu giá trị, 1 bít gọi là bit tiếp tục. Giá trị được tính bằng cách nhân giá trị được diên tả bởi 7 bit và lũy thừa tăng dần của 128. Ví dụ miêu tả độ Remain Length = 64, ta chỉ cần 1 byte, trong đó 7 bytes để miêu tả giá trị 64, 1 bit còn lại bằng 0. Một ví dụ nữa, giá trị là 321 chẳng hạn 321 = 65*128^0 + 2* 128^1, ta cần 2 byte để biểu diễn. Byte đầu chứa giá trị 65 trong 7 bit và bit còn lại là 1. Byte thứ 2 chứa giá trị 2 ở 7 bit và 1 bit chứa giá trị bằng 0.</p>
-<p>Trường này được biểu diễn tối đa trong 4 byte. Tức là cho độ dài cho phép sẽ là đến 268 435 455 (256 MB)</p>
-<p>Bảng sau miêu tả độ dài có thể biểu diễn với các số byte tương ứng.</p>
+<p>Miêu tả độ dài bao gồm cả phần header thay đổi được và payload có trong message.</p>
+<p>Khi sử dụng 1 byte cho trường này thì độ dài tối đa lên đến 127 bytes. Những message dài hơn sẽ được miêu tả theo cách sau.
+7 bit thấp được dùng để miêu tả giá trị, bit còn lại dùng để miêu tả phía sau còn byte nào miêu tả trường này hay không. Mỗi byte encode được 128 giá trị, 1 bít gọi là bit tiếp tục. Giá trị được tính bằng cách nhân giá trị được diên tả bởi 7 bit và lũy thừa tăng dần của 128. Ví dụ miêu tả độ Remain Length = 64, ta chỉ cần 1 byte, trong đó 7 bytes để miêu tả giá trị 64, 1 bit còn lại bằng 0. Một ví dụ nữa, giá trị là 321 chẳng hạn 321 = 65*128^0 + 2* 128^1, ta cần 2 byte để biểu diễn. Byte đầu chứa giá trị 65 trong 7 bit và bit còn lại là 1. Byte thứ 2 chứa giá trị 2 ở 7 bit và 1 bit chứa giá trị bằng 0.</p>
+<p>Trường này được biểu diễn tối đa trong 4 byte. Tức là cho độ dài cho phép sẽ là đến 268 435 455 (256 MB). Giá trị này được truyền đi (in wire) theo thứ tự sau: 0xFF, 0xFF, 0xFF, 0x7F</p>
+<p>Bảng sau miêu tả độ dài có thể miêu tả tương ứng với số byte.</p>
 <table>
 	<thead>
 		<tr>
@@ -498,10 +498,10 @@ Thông tin về cách mô tả mỗi topic (1 nhóm các tin nhắn) được cu
   'output' digit
 while ( X&gt; 0 )</code>
 <p>Ở đây, <code>MOD</code> là phép toán lấy phần dư (<code>%</code> in
-C), <code>DIV</code> trong số nguyên (<code>/</code> in C), và <code>OR</code>
+ngôn ngữ C), <code>DIV</code> trong số nguyên (<code>/</code> trong ngôn ngữ C), và <code>OR</code>
 
-phép HOẶC bít hay (<code>|</code> trong C).</p>
-<p>Thuật toán để decoding dãy byte ra giá trị thập phân ban đầu:</p>
+phép HOẶC bít hay (<code>|</code> trong ngôn ngữ C).</p>
+<p>Thuật toán để chuyển dãy byte ra giá trị thập phân của độ dài ban đầu:</p>
 <code class="block">multiplier = 1 
 value = 0 
 do 
@@ -509,29 +509,28 @@ do
   value += (digit AND 127) * multiplier 
   multiplier *= 128
 while ((digit AND 128) != 0)</code>
-<p>Ở đây<code>AND</code> là phép VÀ bit (<code>&amp;</code>
-in C).</p>
-<p>Khi thuật toán kết thúc, <code>giá trị còn lại trong </code> contains the
-bytes là Remaining Length </p>
+<p>Ở đây <code>AND</code> là phép VÀ bit (<code>&amp;</code>
+trong ngôn ngữ C).</p>
+<p>Khi thuật toán kết thúc, <code>value </code> chứa giá trị của Độ dài còn lại </p>
 
-<p class="tip">Phần encoding của Remaining Length không phải là một phần của header. Số byte dùng để Encoding không được biết trong giá trị trường Remaining Length. Phần quy định có độ dài có thể thay đổi nằm ở Header, còn phần thay đổi thì không phải một phần của header.</p>
-
-
-<h2 id="variable-header">2.2. Header có độ dài thay đổi được</h2>
-<p>Một vài loại MQTT message cũng chưa những phần có đội dài thay đổi được. Nó nằm giữa phần header cố định và phần payload.</p>
-<p class="tip">Phẩn thay đổi được của Remaining Length sẽ không nằm ở phần header thay đổi được.  Phần byte thay đổi đựoc của Remaining Length thuộc về phần header và payload, xem <a href="#fixed-header">Fixed header</a> để biết thêm chi tiết.</p>
-<p>Định dạnh của các trường thay đổi được trong header đuợc miêu tả bên dưới đây:</p>
+<p class="tip">Trường này không thuộc phần Header thay đổi. Số byte dùng để Encoding không được tính trong Độ dài còn lại. Giá trị này vẫn là một phần của header cố định chứ không phải header thay đổi.</p>
 
 
-<h3>Protocol name</h3>
-<p>Xuất hiện trong message
-<a href="#connect">CONNECT</a>. Trường này sẽ chứa tên MQIsdp ở dạng chữ hoa</p>
+<h2 id="variable-header">2.2. Header thay đổi</h2>
+<p>Một vài loại MQTT message chứa phần header thay đổi. Nó nằm giữa phần header cố định và phần payload.</p>
+<p class="tip">Trường Độ dài còn lại không nằm ở phần header thay đổi được (như đã nói ở ngay trên). Phần byte miêu tả cho Độ dài cố định cũng không được tính vào giá trị Độ dài cố định. Độ dài cố định miêu tả độ dài cho phần header thay đổi và payload, xem <a href="#fixed-header">Header cố định</a> để biết thêm chi tiết.</p>
+<p>Định dạnh các trường trong header thay đổi đuợc miêu tả lần lượt bên dưới đây:</p>
 
 
-<h3>Protocol version</h3>
-<p>Xuất hiện trong phần header của message
+<h3>Tên giao thức (Protocol name)</h3>
+<p>Xuất hiện trong phần header thay đổi của message
+<a href="#connect">CONNECT</a>. Trường này là chuỗi UTF, sẽ chứa tên MQIsdp ở dạng chữ hoa</p>
+
+
+<h3>Phiên bản giao thức (Protocol version)</h3>
+<p>Xuất hiện trong phần header thay đổi của message
 <a href="#connect">CONNECT</a> .</p>
-<p>8 bit  biểu diễn một giá trị không dấu là revision của protocol. Giá trị của trường Protocol version ở version hiện tại đuợc miêu tả dưới bảng sau: </p>
+<p>8 bit không dấu, biểu diễn giá trị là phiên bản giao thức mà Client sử dụng. Giá trị của trường phiên bản giao thức, tính đến phiên bản hiện tại 3 (0x03), đuợc miêu tả dưới bảng sau: </p>
 
 <table class="bits">
 	<thead>
@@ -552,7 +551,7 @@ bytes là Remaining Length </p>
 	<tbody>
 		<tr>
 			<td></td>
-			<td colspan="8" align="center">Protocol Version</td>
+			<td colspan="8" align="center">Phiên bản giao thức</td>
 		</tr>
 		<tr>
 			<td></td>
@@ -571,18 +570,18 @@ bytes là Remaining Length </p>
 </table>
 
 
-<h3>Connect flags</h3>
-<p>Giá trị này quy định cờ Clean Session, cờ Will, cờ Will QoS, và cờ Retain flags được chứa trong phần header thay đổi đựoc của message<a href="#connect">CONNECT</a> </p>
+<h3>Các cờ kết nôi (Connect flags) </h3>
+<p>Giá trị này quy định cờ Xóa Session(???), cờ Will(???), cờ Will QoS(???), và cờ báo giữ lại được chứa trong phần header thay đổi của message<a href="#connect">CONNECT</a> </p>
 
 
-<h3 id="clean-session-flag">Clean session flag</h3>
-<p><b>Position:</b> Bit đầu tiên của byte Connect flags</p>
-<p>Nếu không được set (tức là giá trị bằng 1), thì server phải lưu lại những subscriptions sau khi client này đứt kết nối. Nó bao gồm việc tiếp tục lưu những message có QoS bằng 1 và QoS bằng 2 cho các topic đã subscribed vì thế, chúng có thể được chuyển đi khi client kết nối lại. Server cũng phải cập nhật trạng thái "lơ lửng" của message đang được chuyển đi tại thời điểm mà connection bị lost. Thông tin này phải được giữ đến khi client kết nối lại.</p>
-<p>Nếu mà được set (tức giá trị bằng 1), thì server phải quên hết những thông tin trước đó về client, phải coi như là xóa sạch. Sever cũng phải quên hết mọi trạng thái của client này khi nó đứt kết nối.</p>
-<p>Thông thường, client sẽ thực hiện trong 1 mode (hoặc là luôn clean hoặc là luôn không), it khi thay đổi.
-Lựa chọn này phụ thuộc vào ứng dụng. Client kết nối với một clean conenction sẽ không nhận được những thông tin trước đó, nó phải subscribe lại tại mỗi lần kết nối. Client với kết nối dạng non-clean session sẽ không miss bất cứ gói tin QoS 1 hoặc QoS 2 nào, khi nó được published trong lúc client đứt kết nối. 
-QoS 0 sẽ không bao giờ được lưu lại, vì vậy nó chỉ được chuyển đi theo cách thức cố gắng hết mức ở thời điểm nó được publish thôi.</p>
-<p>Cờ này cũng được biết đến với một nghĩa khác "Clean start". Nó được đổi tên để phù hợp với ý nghĩa là nó được áp dụng cho toàn bộ session, chứ không riêng gì connect khởi tạo .</p>
+<h3 id="clean-session-flag">Cờ xóa Session (Clean session flag)</h3>
+<p><b>Position:</b> Bit 1 của Byte chứa các cờ kết nối</p>
+<p>Nếu không được set (tức là giá trị bằng 0), thì server phải lưu lại những subscriptions của Client sau khi client này đứt kết nối. Nó bao gồm việc tiếp tục lưu những message có QoS bằng 1 và 2 cho các topic mà Client đã subscribed, vì thế, chúng có thể được chuyển cho Client kết nối lại. Server cũng phải quản lý trạng thái "lơ lửng" của message được chuyển tới tại thời điểm mà connection bị lost. Thông tin này phải được giữ đến khi client kết nối lại.</p>
+<p>Nếu mà được set (tức giá trị bằng 1), thì server phải quên hết những thông tin trước đó về Client, phải coi như là xóa sạch. Sever cũng phải quên hết mọi trạng thái của Client này khi nó đứt kết nối.</p>
+<p>Thông thường, client sẽ thực hiện trong 1 mode xác định (hoặc là luôn clean hoặc là luôn không), ít khi thay đổi.
+Chọn mode nào phụ thuộc vào ứng dụng. Client kết nối với một clean conenction sẽ không kế thừa được những gì trước đó đã trao đổi, nó phải subscribe lại tất cả các topic tại mỗi lần kết nối. Client với kết nối dạng non-clean session sẽ không bị bỏ mất (miss) bất cứ gói tin QoS 1 hoặc QoS 2 nào, khi nó được published trong lúc client đứt kết nối. 
+QoS 0 sẽ không bao giờ được lưu lại, vì vậy nó chỉ được chuyển đi theo cách thức cố gắng hết mức có thể ở thời điểm message được publish thôi.</p>
+<p>Cờ này cũng được biết đến với một nghĩa khác "Clean start". Nó được đổi tên để phù hợp với ý nghĩa của nó rằng việc xóa sạch được áp dụng cho toàn bộ session, chứ không riêng gì lúc khởi tạo kết nối .</p>
 <p>Một server có thể cung cấp một cơ chế quản trị cho phép có xóa các thông tin đã lưu về client hay không. Nó có thể được sử dụng trong trường hợp biết chắc chắn rằng client nào đó không bao reconnect.</p>
 
 <table class="bits">
@@ -604,14 +603,14 @@ QoS 0 sẽ không bao giờ được lưu lại, vì vậy nó chỉ được ch
 	<tbody>
 		<tr>
 			<td></td>
-			<td align="center">User Name Flag</td>
+			<td align="center">Cờ User Name</td>
 
-			<td align="center">Password Flag</td>
-			<td align="center">Will Retain</td>
+			<td align="center">Cờ Password</td>
+			<td align="center">Cờ Will Retain</td>
 			<td colspan="2" align="center">Will QoS</td>
 			<td align="center">Will Flag</td>
-			<td align="center">Clean Session</td>
-			<td align="center">Reserved</td>
+			<td align="center">Cờ xóa Session</td>
+			<td align="center">Chưa dùng</td>
 
 		</tr>
 		<tr>
@@ -628,13 +627,13 @@ QoS 0 sẽ không bao giờ được lưu lại, vì vậy nó chỉ được ch
 		</tr>
 	</tbody>
 </table>
-<p>Bit số 0 của byte này không được sử dụng troverserverrsion hiện tại của protocol. Nó có thể được sử dụng trong tương lai.</p>
+<p>Bit số 0 của byte này không được sử dụng trong phiên bản hiện tại của giao thức. Nó có thể được sử dụng trong tương lai.</p>
 
 
 <h3>Will flag</h3>
-<p><b>Position:</b> Bit thứ 2 của byte Connect flags</p>
-<p>Trường này định nghĩa rằng, một message được published bởi server nhân danh cho một client mà server không thể giữ kết nối bằng Keep Alive hoặc có lỗi I/O trong quá trình kết nối với Client. Phải phân biệt với trường hợp server nhận được message DISCONNECT từ Client, khi đó nó sẽ không gửi Will message</p>
-<p>Nếu cờ này được set, Will QoS và Will Retain sẽ được biểu diễn trong trong cờ Connect và các trường của Will Topic và Will Message phải có trong phần payload.</p>
+<p><b>Position:</b> Bit thứ 2 của byte chứa các cờ kết nối</p>
+<p>Message được định nghĩa là loại message được published bởi server nhân danh cho một client mà server không thể giữ kết nối bằng Keep Alive được hoặc có lỗi I/O trong quá trình giao tiếp. Phân biệt với trường hợp server nhận được message DISCONNECT từ Client, trường hợp nó không gửi Will</p>
+<p>Nếu cờ này được set, Will QoS và Will Retain cũng phải được bật và các trường của Will Topic và Will Message phải có trong phần payload của message.</p>
 <p> Định dạng của cờ Will được chỉ ra trong bảng dưới đây:.</p>
 <table class="bits">
 	<thead>
@@ -662,8 +661,8 @@ QoS 0 sẽ không bao giờ được lưu lại, vì vậy nó chỉ được ch
 			<td colspan="2" align="center">Will QoS</td>
 			<td align="center">Will Flag</td>
 
-			<td align="center">Clean Session</td>
-			<td align="center">Reserved</td>
+			<td align="center">Cờ xóa Session</td>
+			<td align="center">Chưa sử dụng</td>
 		</tr>
 		<tr>
 			<td></td>
@@ -680,12 +679,12 @@ QoS 0 sẽ không bao giờ được lưu lại, vì vậy nó chỉ được ch
 		</tr>
 	</tbody>
 </table>
-<p>Bit 0 của byte này chưa được sử dụng trong phiên bản hiện tại của protocol này.</p>
+<p>Bit 0 của byte này chưa được sử dụng trong phiên bản hiện tại của giao thức. Nó có thể được sử dụng trong tương lai</p>
 
 
 <h3>Will QoS</h3>
-<p><b>Position:</b>Byte 3, 4 của byte Connect Flags </p>
-<p>Một quy định về QoS cho message Will là trường Will QoS, message này được gửi để báo về event đứt kết nối với Client không tự nguyện. Message Will được định nghĩa trong phần payload của message 
+<p><b>Position:</b>Byte 3, 4 của byte chứa cờ kết nối </p>
+<p>Client Message Will được định nghĩa trong phần payload của message 
 of a <a href="#connect">CONNECT</a> .</p>
 
 <p>Nếu cờ Will flags được set, thì trường Will QoS sẽ là bắt buộc, ngoài ra nó sẽ bị bỏ qua.</p>
@@ -715,8 +714,8 @@ of a <a href="#connect">CONNECT</a> .</p>
 
 			<td colspan="2" align="center">Will QoS</td>
 			<td align="center">Will Flag</td>
-			<td align="center">Clean Session</td>
-			<td align="center">Reserved</td>
+			<td align="center">Cờ xóa Session</td>
+			<td align="center">Chưa dùng</td>
 		</tr>
 		<tr>
 			<td></td>
@@ -733,13 +732,13 @@ of a <a href="#connect">CONNECT</a> .</p>
 		</tr>
 	</tbody>
 </table>
-<p>Bit 0 không được dùng trong phiên bản này này của procol. Nó có thể được sử dụng trong tương lai.</p>
+<p>Bit 0 không được dùng trong phiên bản này hiện tại của giao thức. Nó có thể được sử dụng trong tương lai.</p>
 
 
 <h3>Will Retain flag</h3>
-<p><b>Position:</b> Bít 5 của byte Connect flags .</p>
+<p><b>Position:</b> Bít 5 của byte chứa cờ kết nối .</p>
 
-<p>Cờ Will Retain flag sẽ quy định có hay không việc giữ lại message Will đã được published khi client đứt kết nối bất thường.</p>
+<p>Cờ Will Retain flag sẽ cho server biết có hay không việc giữ lại message Will đã được published khi client đứt kết nối bất thường.</p>
 <p>Cờ Will Retain flag là bắt buộc nếu Will flag được set,
 ngoài ra, nó sẽ bị bỏ qua. Định dạng của cờ này được miêu tả trong bảng sau.</p>
 <table class="bits">
@@ -767,8 +766,8 @@ ngoài ra, nó sẽ bị bỏ qua. Định dạng của cờ này được miêu
 
 			<td colspan="2" align="center">Will QoS</td>
 			<td align="center">Will Flag</td>
-			<td align="center">Clean Session</td>
-			<td align="center">Reserved</td>
+			<td align="center">Xóa Session</td>
+			<td align="center">Chưa dùng</td>
 		</tr>
 		<tr>
 			<td></td>
@@ -785,14 +784,14 @@ ngoài ra, nó sẽ bị bỏ qua. Định dạng của cờ này được miêu
 		</tr>
 	</tbody>
 </table>
-<p>Bit 0 không được sử dụng trong version này của protocol. Nó có thể được sử dụng trong các phiên bản sau.</p>
+<p>Bit 0 không được sử dụng trong version này của giao thức. Nó có thể được sử dụng trong các phiên bản sau.</p>
 
 <h3>User name and password flags</h3>
-<p><b>Position:</b> Bit 6, 7 của byte Connect flags .</p>
+<p><b>Position:</b> Bit 6, 7 của byte chứa cờ kết nối .</p>
 
-<p>Một kết nối từ client có thể chỉ ra user và password, thiết lập các trường để thông báo rằng có User và Password (tùy chọn) trong phần payload của Message CONNECT <a href="#connect">CONNECT</a> .</p>
-<p>Nếu trường User Name được set, thì trường User Name là bắt buộc,
-ngoài ra nó, sẽ bị bỏ qua. Nếu cờ Password được set, thì trường Password là bắt buộc, mặt khác nó sẽ bỏ qua giá trị này.  Nó sẽ không quan tâm đến Password nếu không cung cấp Username.</p>
+<p>Client kết nối đến server chỉ ra user và password, set 2 trường này để thông báo rằng có User và Password (tùy chọn) trong phần payload của message CONNECT <a href="#connect">CONNECT</a> .</p>
+<p>Nếu cờ User Name được set, thì trường User Name là bắt buộc,
+ngoài ra nó, sẽ bị bỏ qua. Nếu cờ Password được set, thì trường Password là bắt buộc, mặt khác nó sẽ bỏ qua giá trị này.  Nếu chỉ có password mà không có user name thì coi là không hợp lệ.</p>
 <table class="bits">
 	<thead>
 		<tr>
@@ -818,8 +817,8 @@ ngoài ra nó, sẽ bị bỏ qua. Nếu cờ Password được set, thì trư�
 			<td align="center">Will Retain</td>
 			<td colspan="2" align="center">Will QoS</td>
 			<td align="center">Will Flag</td>
-			<td align="center">Clean Session</td>
-			<td align="center">Reserved</td>
+			<td align="center">Xóa Session</td>
+			<td align="center">Chưa dùng</td>
 		</tr>
 
 		<tr>
@@ -839,18 +838,18 @@ ngoài ra nó, sẽ bị bỏ qua. Nếu cờ Password được set, thì trư�
 <p>Bit 0 chưa được sử dụng trong phiên bản này của protocol. Nó có thể được sử dụng trong tương lai.</p>
 
 <h3 id="keep-alive-timer">Keep Alive timer</h3>
-<p>The Keep Alive timer được chứa bên trong phần header thay đổi được của message
+<p>The Keep Alive timer được chứa bên trong phần header thay đổi của message
 <a href="#connect">CONNECT</a> .</p>
-<p>The Keep Alive timer,  được tính bằng second, định nghĩa interval time lớn nhất giữa các message nhận từ client. Trường này giúp server phát hiện được khi nào kết nối đến client bị đứt mà không cần phải đợi TCP/IP timeout. Client có trách nhiệm gửi 1 message trong mỗi chu kì Keep Alive. Khi không xuất hiện các message liên quan đến Data trong chu kì này thì client phải gửi một message <a href="#pingreq">PINGREQ</a> , và khi đó server sẽ trả lời bằng message
-<a href="#pingresp">PINGRESP</a>.</p>
-<p>Nếu server không nhận được message trong vòng 1.5 chu kì của Keep Alive (clients sẽ được "ân hạn" thêm một nửa chu kì), Nó sẽ disconnect với clients như là khi client gửi message <a href="#disconnect">DISCONNECT</a>. Hành động này không ảnh hưởng đến bất kì subscriptions nào của client. Xem thêm về 
-<a href="#disconnect">DISCONNECT</a> để biết thêm chi tiết.</p>
+<p>Chu kì Keep Alive,  được tính bằng giây, định nghĩa khoảng thời gian lớn nhất giữa các message nhận từ Client. Trường này giúp server phát hiện được khi nào kết nối đến client bị đứt mà không cần phải đợi TCP/IP timeout. Client có trách nhiệm gửi 1 message trong trong khoảng thời gian được giới hạn ở trên. Khi không có message nào liên quan đến dữ liệu cần gửi trong chu kì này thì client phải gửi một message <a href="#pingreq">PINGREQ</a> đi, và khi đó server sẽ trả lời bằng message
+<a href="#pingresp">PINGRESP</a> để giữ kết nối.</p>
+<p>Nếu server không nhận được message trong vòng 1.5 chu kì của Keep Alive (tức Client sẽ được "ân hạn" thêm một nửa chu kì), Nó sẽ disconnect với Client giống như khi Client gửi message <a href="#disconnect">DISCONNECT</a>. Hành động này không ảnh hưởng đến bất kì subscriptions nào của client. Xem thêm về 
+<a href="#disconnect">DISCONNECT</a> để biết chi tiết.</p>
 <p>Nếu client không nhận được message <a href="#pingresp">PINGRESP</a>
-trong khoảng 1 chu kì Keep Alive sau khi gửi một message <a href="#pingreq">PINGREQ</a>,
+trong khoảng 1 chu kì Keep Alive sau khi gửi message <a href="#pingreq">PINGREQ</a>,
 thì nó nên đóng kết nối TCP/IP lại.</p>
 
 
-<p>Keep Alive timer là một giá trị 16 bit biểu diễn số second của chu kì này. Giá trị khi sử dụng sẽ phụ thuộc vào ứng dụng, nó thường là vãi phút. Giá trị lớn nhất có thể là 18 giờ. Nếu giá trị này là Zero, có nghĩa là client không bị mất kết nối. </p>
+<p>Chu kì Keep Alive là một giá trị 16 bit biểu diễn số giây của chu kì. Giá trị khi sử dụng sẽ phụ thuộc vào ứng dụng, nó thường là vài phút. Giá trị lớn nhất có thể là 18 giờ. Nếu giá trị này là Zero, có nghĩa là client không ngắt kết nối. </p>
 <p>Định dạng của Keep Alive được chỉ ra dưới bảng sau. Thứ tự byte là byte cao trước(MSB), byte thấp sau(LSB).</p>
 
 <table class="bits">
@@ -872,21 +871,21 @@ thì nó nên đóng kết nối TCP/IP lại.</p>
 	<tbody>
 		<tr>
 			<td></td>
-			<td colspan="8" align="center">Keep Alive MSB</td>
+			<td colspan="8" align="center">Byte giá trị cao Keep Alive</td>
 		</tr>
 		<tr>
 			<td></td>
 
-			<td colspan="8" align="center">Keep Alive LSB</td>
+			<td colspan="8" align="center">Byte giá trị thấp Keep Alive</td>
 		</tr>
 	</tbody>
 </table>
 
 
-<h3>Connect return code</h3>
-<p>Mã kết nối được trả về được gửi trong phần header thay đổi được của message
+<h3>Mã trả về của CONNECT</h3>
+<p>Mã trả về của kết nối được được gửi trong phần header thay đổi của message
 <a href="#connack">CONNACK</a> message.</p>
-<p>Trường này định nghĩa một bở một byte có giá trị >=0. Ý nghĩa của mỗi giá trị được miêu tả trong bảng bên dưới. Tuy giá trị trả về có ý nghĩa thay đổi theo từng loại message. Thông thường, trả về 0 có nghĩa là success. </p>
+<p>Trường này chứa một byte không dấu. Ý nghĩa của mỗi giá trị được xác định cho mỗi loại message, miêu tả trong bảng bên dưới. Thông thường, trả về 0 có nghĩa là success. </p>
 <table>
 
 	<thead>
@@ -907,13 +906,13 @@ thì nó nên đóng kết nối TCP/IP lại.</p>
 
 			<td>1</td>
 			<td>0x01</td>
-			<td>Kết nối bị từ chối : phiên bản của protocol không được chấp nhận. </td>
+			<td>Kết nối bị từ chối : phiên bản của giao thức không được chấp nhận. </td>
 		</tr>
 		<tr>
 			<td>2</td>
 			<td>0x02</td>
 
-			<td>Kết nối bị từ chối: identifier bị bỏ, hay không hợp lệ</td>
+			<td>Kết nối bị từ chối: đối tương kết nối không hợp lệ</td>
 		</tr>
 		<tr>
 			<td>3</td>
@@ -930,12 +929,12 @@ thì nó nên đóng kết nối TCP/IP lại.</p>
 			<td>5</td>
 
 			<td>0x05</td>
-			<td>Kết nối bị từ chối: chưa được xác thực</td>
+			<td>Kết nối bị từ chối: không xác thực được</td>
 		</tr>
 		<tr>
 			<td>6-255</td>
 			<td></td>
-			<td>Sử dụng trong tương lai</td>
+			<td>Chưa sử dụng</td>
 
 		</tr>
 	</tbody>
@@ -960,53 +959,52 @@ thì nó nên đóng kết nối TCP/IP lại.</p>
 	<tbody>
 		<tr>
 			<td></td>
-			<td colspan="8" align="center">Return Code</td>
+			<td colspan="8" align="center">Mã trả về</td>
 		</tr>
 
 	</tbody>
 </table>
 
 
-<h3>Topic name</h3>
-<p>The topic name được chưa trong phần header thay đổi được của một message <a href="#publish">PUBLISH</a> .</p>
-<p>The topic name là chìa khóa để xác định thông tin về kênh thông tin mà payload sẽ được published tới. Subscribers sử dụng trường này để xác định kênh thông tin mà nó muốn nhận được.</p>
-<p>The topic name là một xâu UTF-encoded. Xem thêm ở chương <a href="#utf-8">MQTT
-and UTF-8</a> để biết thêm thông tin chi tiết. Topic name có giới hạn trên của độ dài là
+<h3>Tên topic</h3>
+<p>Tên topic được chứa trong phần header thay đổi message <a href="#publish">PUBLISH</a> .</p>
+<p>Tên topic xác định kênh thông tin của payload được gửi (published) lên. Subscribers sử dụng trường này để xác định kênh thông tin mà nó muốn nhận được.</p>
+<p>Tên topic là một chuỗi UTF. Xem ở <a href="#utf-8">MQTT
+and UTF-8</a> để biết thêm thông tin chi tiết. Tên topic có giới hạn trên về độ dài là
 32,767 kí tự.</p>
 
 
 <h2 id="payload">2.3. Payload</h2>
-<p>Nhưng message dưới đây sẽ có payload:</p>
+<p>Chỉ những message dưới đây mới có phần payload:</p>
 <dl>
 
 	<dt><a href="#connect">CONNECT</a></dt>
-	<dd>Nó chứa một hoặc nhiều chuỗi UTF-8 encoded. Trong đó, chỉ định rõ một identifier duy nhất cho client, một Will topic and message and và cả user name, password nữa. Không phải tất cả chúng đều xuất hiện và sự xuất hiện của chúng được quy định bởi một tập các cờ phía trước.</dd>
+	<dd>Nó chứa một hoặc nhiều chuỗi UTF-8 encoded. Trong đó, chỉ định rõ một đanh danh duy nhất cho client, một Will topic và cả user name, password nữa. Không phải tất cả chúng đều xuất hiện và sự xuất hiện của chúng được quy định bởi một tập các cờ phía trước.</dd>
 
 
 	<dt><a href="#subscribe">SUBSCRIBE</a></dt>
 
-	<dd>Chứa một danh sách các topic name mà client có thể subcribe và cả QoS level nữa. Tất cả chúng cũng là UTF-encoded.</dd>
+	<dd>Chứa một danh sách các topic name mà client có thể subcribe và cả mức nữa. Tất cả chúng cũng chuỗi UTF-encoded.</dd>
 
 
 	<dt><a href="#suback">SUBACK</a></dt>
-	<dd>Payload sẽ chưa một danh sách của các QoS level được cho phép. Có một mức QoS level mà administrators của server cho phép client sử dụng để subcribe đến một Topic name cụ thể. Những QoS level này được liệt kê cùng thứ tự tương ứng với danh sách các Topic Name trong message SUBSCRIBE.</dd>
+	<dd>Payload sẽ chứa một danh sách của các mức QoS được cho phép. Quản trị phía server có thể thiết lập mức QoS cho mỗi topic cụ thể. Những QoS level này được liệt kê cùng thứ tự tương ứng với danh sách các tên Topic trong message SUBSCRIBE.</dd>
 
 </dl>
-<p>Phần payload của message <a href="#publish">PUBLISH</a> chỉ chứa dữ liệu cho ứng dụng cụ thể. Không thể giả định chúng được tạo bởi dữ liệu tự nhiên hay nội dung của dữ liệu "sống", phần này sẽ được hiểu là một BLOB.</p>
+<p>Phần payload của message <a href="#publish">PUBLISH</a> chỉ chứa dữ liệu cho ứng dụng cụ thể. Không thể giả định chúng là dữ liệu dạng nào, vì thế nó được coi là dữ liệu bất kì (BLOB).</p>
 
-<p>Nếu bạn muốn ứng dụng thực hiện việc nén dữ liệu đưa vào trong payload data, bạn cần định nghĩa trong ứng dụng một cờ payload tương ứng để xử lý nhưng dữ liệu payload này. Bạn không thể định nghĩa một cờ chỉ cho ứng dụng cụ thể bên trong bất cứ thành phần nào của header.</p>
+<p>Nếu bạn muốn ứng dụng thực hiện việc nén dữ liệu đưa vào trong payload data, bạn cần định nghĩa trong ứng dụng một cờ payload tương ứng để xử lý những dữ liệu payload này. Bạn không thể định nghĩa một cờ đặc trưng cho ứng dụng cụ thể bên trong phần header cố định hoặc thay đổi được.</p>
 
 
-<h2 id="msg-id">2.4. Message identifiers</h2>
-<p>The message identifier được xuất hiện trong phần header của các message dưới đây: PUBLISH, PUBACK, PUBREC, PUBREL, PUBCOMP,
+<h2 id="msg-id">2.4. Định danh messsage (Message identifiers)</h2>
+<p>Định danh message được xuất hiện trong phần header của các message dưới đây: PUBLISH, PUBACK, PUBREC, PUBREL, PUBCOMP,
 SUBSCRIBE, SUBACK, UNSUBSCRIBE, UNSUBACK.</p>
-<p>Trường Message Identifier (Message ID) chỉ xuất hiện trong message khi giá trị QoS bit miêu tả trong header chỉ định đến giá trị QoS 1 hoặc
-2. Xem thêm ở <a href="#qos-flows">Quality of Service levels and flows</a> để biết thêm thông tin chi tiết.</p>
-<p>The Message ID là một giá trị integer 16 bit không dấu và phải là duy nhất trong tập các message ở một hướng kết nối cụ thể nào đó. Thông thường người ta thường tăng lên sau mỗi message nhưng việc tăng này là không bắt buộc.</p>
-<p>A client sẽ phải maintain một danh sách các message IDs để tách biệt với Message ODs được sử dụng server mà nó kết nối đến. Điều này cho phép việc gửi một PUBLISH với message ID bằng 1 tại đúng thời điểm nhận một message được PUBLISH lên server với message ID bằng 1.</p>
-<p>Thứ tự 2 byte ở đây là MSB , sau đó đến LSB</p>
+<p>Trường định danh message (Message ID) chỉ xuất hiện trong message khi giá trị QoS bit miêu tả trong header cố định có giá trị là 1 hoặc 2. Xem ở <a href="#qos-flows">Quality of Service levels and flows</a> để biết thêm thông tin chi tiết.</p>
+<p>The Message ID là một giá trị nguyên 16 bit không dấu và phải là duy nhất trong tập các message, ở một hướng kết nối cụ thể nào đó. Giá trị này được tăng dần sau mỗi message nhưng việc tăng này là không bắt buộc.</p>
+<p>Client sẽ phải tự quản lý một danh sách các message IDs của chính nó để tách biệt với Message IDs được phía server sử dụng. Điều này cho phép việc gửi một PUBLISH với message ID bằng 1 tại đúng thời điểm nhận một message được PUBLISH lên server với message ID bằng 1.</p>
+<p>Thứ tự 2 byte ở đây là MSB trước , LSB sau</p>
 
-<p>Đừng sử dụng Message ID là 0. Nó thường được sử dụng là Invalid Message ID</p>
+<p>Đừng sử dụng Message ID là 0. Nó thường được hiểu là Message ID không hợp lệ</p>
 <table class="bits">
 	<thead>
 		<tr>
@@ -1026,19 +1024,19 @@ SUBSCRIBE, SUBACK, UNSUBSCRIBE, UNSUBACK.</p>
 	<tbody>
 		<tr>
 			<td></td>
-			<td colspan="8" align="center">Message Identifier MSB</td>
+			<td colspan="8" align="center">Byte giá trị cao của Message Identifier</td>
 		</tr>
 		<tr>
 			<td></td>
 
-			<td colspan="8" align="center">Message Identifier LSB</td>
+			<td colspan="8" align="center">Byte giá trị thấp Message Identifier</td>
 		</tr>
 	</tbody>
 </table>
 
 <h2 id="utf-8">2.5. MQTT and UTF-8</h2>
 <p>UTF-8 is là một encoding hiệu quả của cho chuỗi Unicode character-strings, nó vẫn tối ưu việc Encoding các kí tự ASCII trong môi trường giao tiếp dạng text tuần túy.</p>
-<p>Trong MQTT, mỗi xâu được gắn với một phần prefixed có độ dài 2 byte, biểu diễn độ dài của toàn bộ xâu được Encoded, như bảng dưới đây:</p>
+<p>Trong giao thức MQTT, mỗi chuỗi được gắn với một phần tiền tố có độ dài 2 byte, biểu diễn độ dài của toàn bộ chuỗi được Encoded, như bảng dưới đây:</p>
 <table class="bits">
 	<thead>
 
@@ -1059,20 +1057,20 @@ SUBSCRIBE, SUBACK, UNSUBSCRIBE, UNSUBACK.</p>
 
 		<tr>
 			<td>byte 1</td>
-			<td colspan="8" align="center">String Length MSB</td>
+			<td colspan="8" align="center">Byte giá trị cao của Độ dài chuỗi</td>
 		</tr>
 		<tr>
 			<td>byte 2</td>
-			<td colspan="8" align="center">String Length LSB</td>
+			<td colspan="8" align="center">Byte giá trị thấp của Độ dài chuỗi</td>
 
 		</tr>
 		<tr>
 			<td>bytes 3 ...</td>
-			<td colspan="8" align="center">Encoded Character Data</td>
+			<td colspan="8" align="center">Dữ liệu đã được Encoded</td>
 		</tr>
 	</tbody>
 </table>
-<p>String Length là độ dài byte của xâu sau khi được encoded, chứ không phải là số lượng kí tự, not the number of characters.
+<p>Độ dài chuỗi là độ dài tính bằng byte của chuỗi sau khi được encoded, chứ không phải là số lượng kí tự, not the number of characters.
 Ví dụ như này, xâu "OTWP" được Encoded trong UTF-8 như bảng dưới đây.</p>
 
 <table class="bits">
@@ -1094,7 +1092,7 @@ Ví dụ như này, xâu "OTWP" được Encoded trong UTF-8 như bảng dưới
 	<tbody>
 		<tr>
 			<td>byte 1</td>
-			<td colspan="8" align="center">Message Length MSB (0x00)</td>
+			<td colspan="8" align="center">Byte cao của độ dài (0x00)</td>
 		</tr>
 		<tr>
 			<td></td>
@@ -1111,7 +1109,7 @@ Ví dụ như này, xâu "OTWP" được Encoded trong UTF-8 như bảng dưới
 		</tr>
 		<tr>
 			<td>byte 2</td>
-			<td colspan="8" align="center">Message Length LSB (0x04)</td>
+			<td colspan="8" align="center">Byte thấp của độ dài (0x04)</td>
 		</tr>
 
 		<tr>
@@ -1198,7 +1196,7 @@ Ví dụ như này, xâu "OTWP" được Encoded trong UTF-8 như bảng dưới
 	</tbody>
 </table>
 
-<p>Data stream của Java sử dụng<code>writeUTF()</code> and <code>readUTF()</code> theo định dạng như trên.</p>
+<p>Data stream của Java sử dụng <code>writeUTF()</code> và  <code>readUTF()</code> theo định dạng như trên.</p>
 
 
 <h2 id="unused-bits">2.6. Unused bits</h2>
@@ -1228,12 +1226,12 @@ Ví dụ như này, xâu "OTWP" được Encoded trong UTF-8 như bảng dưới
 	<li><a href="#disconnect">DISCONNECT</a></li>
 </ul>
 
-<h2 id="connect">3.1. CONNECT - Client yêu cầu connect đến server</h2>
-<p>Khi một một kết nối TCP/IP được thiết lập từ client đến server, thì một session ở mức protocol cũng được tạo sử dụng luồng CONNECT.
+<h2 id="connect">3.1. CONNECT - Client yêu cầu kết nối đến server</h2>
+<p>Khi một một kết nối TCP/IP được thiết lập từ client đến server, thì một session ở mức giao thức cũng được tạo sử dụng luồng CONNECT.
 </p>
 
 <h3>Header cố định</h3>
-<p>Định dạng được thấy dưới bảng sau:.</p>
+<p>Định dạng được thấy dưới bảng sau:</p>
 <table class="bits">
 	<thead>
 		<tr>
@@ -1254,10 +1252,10 @@ Ví dụ như này, xâu "OTWP" được Encoded trong UTF-8 như bảng dưới
 		<tr>
 			<td>byte 1</td>
 
-			<td colspan="4" align="center">Message Type (1)</td>
-			<td align="center">DUP flag</td>
-			<td colspan="2" align="center">QoS level</td>
-			<td align="center">RETAIN</td>
+			<td colspan="4" align="center">Loại message (1)</td>
+			<td align="center">Cờ lặp DUP</td>
+			<td colspan="2" align="center">Mức QoS</td>
+			<td align="center">Cờ báo giữ lại</td>
 		</tr>
 		<tr>
 			<td></td>
@@ -1274,25 +1272,25 @@ Ví dụ như này, xâu "OTWP" được Encoded trong UTF-8 như bảng dưới
 		</tr>
 		<tr>
 			<td>byte 2</td>
-			<td colspan="8" align="center">Remaining Length</td>
+			<td colspan="8" align="center">Độ dài còn lại</td>
 		</tr>
 
 	</tbody>
 </table>
 <p>Cờ DUP, QoS, and RETAIN không được sử dụng trong message CONNECT
 .</p>
-<p>Remaining Length là độ dài của phần header thay đổi được(12 bytes)
+<p>Độ dài còn lại là độ dài của phần header thay đổi được (12 bytes)
 và độ dài . Nó có thể là nhiều byte.</p>
 
 
-<h3>Variable header</h3>
+<h3>Header thay đổi</h3>
 <p>Một ví dụ về định dạng của phần header biến đổi được có thể thấy trong bảng sau.</p>
 <table class="bits">
 	<thead>
 		<tr>
 
 			<th></th>
-			<th>Description</th>
+			<th>Miêu tả</th>
 			<th align="center">7</th>
 			<th align="center">6</th>
 			<th align="center">5</th>
@@ -1307,11 +1305,11 @@ và độ dài . Nó có thể là nhiều byte.</p>
 	<tbody>
 
 		<tr>
-			<td colspan="10">Protocol Name</td>
+			<td colspan="10">Tên giao thức</td>
 		</tr>
 		<tr>
 			<td>byte 1</td>
-			<td>Length MSB (0)</td>
+			<td>Giá trị byte cao của độ dài (0)</td>
 			<td align="center">0</td>
 
 			<td align="center">0</td>
@@ -1325,7 +1323,7 @@ và độ dài . Nó có thể là nhiều byte.</p>
 		</tr>
 		<tr>
 			<td>byte 2</td>
-			<td>Length LSB (6)</td>
+			<td>Giá trị byte thấp của độ dài (6)</td>
 			<td align="center">0</td>
 			<td align="center">0</td>
 
@@ -1422,7 +1420,7 @@ và độ dài . Nó có thể là nhiều byte.</p>
 		</tr>
 
 		<tr>
-			<td colspan="10">Protocol Version Number</td>
+			<td colspan="10">Số phiên bản giao thức</td>
 		</tr>
 		<tr>
 			<td>byte 9</td>
@@ -1444,12 +1442,12 @@ và độ dài . Nó có thể là nhiều byte.</p>
 		<tr>
 			<td>byte 10</td>
 
-			<td>User name flag (1)<br>
-			Password flag (1)<br>
+			<td>Cờ User name (1)<br>
+			Cờ Password  (1)<br>
 			Will RETAIN (0)<br>
 			Will QoS (01)<br>
 			Will flag (1)<br>
-			Clean Session (1)</td>
+			Cờ xóa Session (1)</td>
 
 			<td align="center">1</td>
 			<td align="center">1</td>
@@ -1462,12 +1460,12 @@ và độ dài . Nó có thể là nhiều byte.</p>
 			<td align="center">x</td>
 		</tr>
 		<tr>
-			<td colspan="10">Keep Alive timer</td>
+			<td colspan="10">Chu kì Keep Alive</td>
 		</tr>
 		<tr>
 
 			<td>byte 11</td>
-			<td>Keep Alive MSB (0)</td>
+			<td>Giá trị byte cao của chu kì Keep Alive (0)</td>
 			<td align="center">0</td>
 			<td align="center">0</td>
 			<td align="center">0</td>
@@ -1481,7 +1479,7 @@ và độ dài . Nó có thể là nhiều byte.</p>
 		<tr>
 			<td>byte 12</td>
 
-			<td>Keep Alive LSB (10)</td>
+			<td>Giá trị byte thấp của chu kì Keep Alive (10)</td>
 			<td align="center">0</td>
 			<td align="center">0</td>
 			<td align="center">0</td>
@@ -1496,40 +1494,40 @@ và độ dài . Nó có thể là nhiều byte.</p>
 </table>
 
 <dl>
-	<dt>User name flag</dt>
+	<dt>Cờ User name</dt>
 
 	<dd>Set (1).</dd>
 	
-	<dt>Password flag</dt>
+	<dt>Cờ Password</dt>
 	<dd>Set (1).</dd>
 
-	<dt>Clean Session flag</dt>
+	<dt>Cờ xóa Session</dt>
 	<dd>Set (1).</dd>
 
-	<dt>Keep Alive timer</dt>
-	<dd>Set to 10 seconds (0x000A).</dd>
+	<dt>Chu kì Keep Alive</dt>
+	<dd>Set giá trị 10 giây (0x000A).</dd>
 
 
-	<dt>Will message</dt>
+	<dt>Dành cho message Will</dt>
 	<dd>
 	<ul>
-		<li>Will flag is set (1)</li>
+		<li>Cờ Will được set (1)</li>
 
-		<li>Will QoS field is 1</li>
-		<li>Will RETAIN flag is clear (0)</li>
+		<li>Cờ Will QoS được 1</li>
+		<li>Cờ Will RETAIN được xóa (0)</li>
 	</ul>
 	</dd>
 
 </dl>
 
 <h3>Payload</h3>
-Payload của message CONNECT chưa một hoặc nhiều xâu UTF-8 dựa trên các cờ ở phần header thay đổi được. Nhưng xâu này, nếu có sẽ xuất hiện theo thứ tự sau:
+Payload của message CONNECT chứa một hoặc nhiều chuỗi UTF-8 tùy theo giá trị trên các cờ ở phần header thay đổi được. Những chuỗi này, nếu có sẽ xuất hiện theo thứ tự sau:
 <dl>
 
-	<dt>Client Identifier</dt>
+	<dt>Định danh Client</dt>
 	<dd>
-	<p>Xâu được encode UTF đầu tiên. The Client Identifier (Client ID)
-	có độ dài từ 1 đến 23 kí tự, và nó xác định một định danh duy nhất của client kết nối đến server. Nó phải là duy nhất khi so sánh với các clients khác, và nó là key để chuyển các message với QoS là 1 và 2. Nếu Client ID chứa nhiều hơn 23 kí tự, server sẽ trả lời yêu cầu CONNECT với mã là 2:
+	<p>Xâu được encode UTF đầu tiên. Định danh Client (Client ID)
+	có độ dài từ 1 đến 23 kí tự, và nó xác định một định danh duy nhất của client kết nối đến server. Nó phải là duy nhất khi so sánh với các clients khác, và nó là key để quản lý các message có QoS là 1 và 2. Nếu Client ID chứa nhiều hơn 23 kí tự, server sẽ trả lời yêu cầu CONNECT với mã là 2:
 	Không chấp nhận định danh.</p>
 	</dd>
 
@@ -1537,52 +1535,52 @@ Payload của message CONNECT chưa một hoặc nhiều xâu UTF-8 dựa trên 
 	<dt>Will Topic</dt>
 	<dd>
 
-	<p>nếu  Will Flag được set, thì đây sẽ là chuỗi UTF-8 tiếp theo. Message Will sẽ được published đến Will Topic. QoS level sẽ được xác định bằng Will QoS field , và 
-	RETAIN status sẽ được xác định bằng cờ Will RETAIN flag trong phần header thay đổi. </p>
+	<p>nếu cờ Will được set, thì đây sẽ là chuỗi UTF-8 tiếp theo. Message Will sẽ được phát hành (publish) đến Will Topic. Mức QoS sẽ được xác định bằng trường Will QoS field, và 
+	trạng thái RETAIN sẽ được xác định bằng cờ Will RETAIN trong phần header thay đổi. </p>
 	</dd>
 
 
 	<dt>Will Message</dt>
 	<dd>
-	<p>Nếu cờ Will Flag được set, thì đây là xâu UTF-8 tiếp theo. Message Will định nghĩa nội dung của message cái mà sẽ được published đến Will Topic nếu client bị disconnect bất thường. Xâu này cũng có thể là xâu rỗng tức là độ dài bằng 0.</p>
-	<p>Mặc dù message Will Message được encoded trong message
-	CONNECT, khi nó published đến Will Topic thì chỉ bytes của messages được gửi, không phải là 2 byte quy định độ dài đầu tiên. Phần message này phải chỉ có thể chứa các kí tự ASCII 7 bit.</p>
+	<p>Nếu cờ Will Flag được set, thì đây là chuỗi UTF-8 tiếp theo. Message Will định nghĩa nội dung của message, sẽ được xuất bản(publish) đến Will Topic nếu client bị mất kết nối bất thường. Chuỗi này cũng có thể là chuỗi rỗng tức là độ dài bằng 0.</p>
+	<p>Mặc dù Will Message được encoded UTF-8 trong message
+	CONNECT, nhưng khi nó được đi published với Will Topic thì chỉ bytes của messages được gửi, không bao gồm 2 byte quy định độ dài chuỗi. Vì thế, message Will này chỉ có thể chứa các kí tự ASCII 7-bit.</p>
 
 	</dd>
 
 	<dt>User Name</dt>
 	<dd>
-	<p>Nếu User Name flag được set, đây sẽ là xâu UTF-encoded tiếp theo.  Trường này xác định tên của user đang kết nối đến, được sử dụng để authention.
+	<p>Nếu cờ User Name được set, đây sẽ là chuỗi UTF-encoded tiếp theo. Trường này xác định tên của user đang kết nối đến, được sử dụng cho việc xác thực (authentication).
 	Dù không bắt buộc nhưng user name nên có độ dài từ 12 kí tự trở xuống.
 	</p>
-	<p>Chú ý rằng, vì lý do tương thích với MQTT version 3, 
-	trường Remaining Length từ phần header cố định được ưu tiên so với cờ User Name.  Server phải có khả năng cho phép trường hợp mà cờ User Name được set nhưng trường User Name bị thiếu vẫn hợp lệ.  Nó nên được đánh giá là hợp lệ và vẫn cho kết nối được tiếp tục.</p>
+	<p>Có một chú ý ở đây, vì lý do tương thích với MQTT phiên bản 3 (không có trường này), 
+	trường Độ dài còn lại từ phần header cố định được ưu tiên so với cờ User Name. Server phải phép trường hợp mà cờ User Name được set nhưng trường User Name bị thiếu vẫn hợp lệ. Kết nối vẫn được tiếp tục.</p>
 	</dd>
 
 	<dt>Password</dt>
 	<dd>
-	<p>Nếu Password flag được set, đây sẽ xâu UTF-8 kế tiếp.  Password cho user tương ứng đang kết nối đến, được sử dụng cho việc authentication.
+	<p>Nếu cờ Password được set, đây sẽ chuỗi UTF-8 kế tiếp. Password cho user tương ứng đang kết nối đến, được sử dụng cho việc xác thực (authentication).
 	Nên để password có độ dài từ 12 kí tự trở xuống dù điều này không bắt buộc.
 	</p>
-	<p>Chú ý rằng, vì lý do tương thích với MQTT version 3, 
-	trường Remaining Length field trong phần header cố định sẽ được ưu tiên hơn trạng thái cờ Password flag.  Server nên cho phép trường hợp Password flag được set, nhưng không có xâu Password sẽ vẫn hợp lệ. Nó nên tiếp tục cho phép kết nối và thực hiện các message khác.</p>
+	<p>Chú ý rằng, vì lý do tương thích với MQTT version 3 (không có trường password), 
+	trường Độ dài còn lại trong phần header cố định sẽ được ưu tiên hơn trạng thái cờ Password. Server nên cho phép trường hợp mà cờ Password được set, nhưng không có chuỗi Password sẽ vẫn hợp lệ. Kết nối vẫn thực hiện.</p>
 	</dd>
 </dl>
 
 
 <h3>Response</h3>
 
-<p>Server sẽ gửi message CONNACK để trả lời message CONNECT từ client.</p>
-<p>Nếu server không nhận được mesage CONNET từ client trong một khoang thời gian nào đó sau khi thiết lập kết nối TCP/IP, thì server nên đóng kết nối đó lại.</p>
-<p>Nếu client không nhận được một message CONNACK từ server trong một khoảng thời gian nhất định, thì client cũng nên đóng kết nối đó lại, và restart session bằng một socket mới đến server rồi tiếp tục gửi yêu cầu kết nối bằng gói CONNECT.</p>
-<p>Trong cả 2 trường hợp trên, thời gian chờ để nhận được message CONNECT hăocj CONNACK phụ thuộc vào ứng dụng và điều kiện kết nối.</p>
-<p>Nếu một client kết nối bằng một Client ID đang được kết nối với Server rồi, thì client trước đó phảu được disconnect bắt buộc bởi server trước khi thực hiện luồng CONNECT với client mới .</p>
-<p>Nếu client gửi một một message CONNECT không hợp lệ, server nên đóng kết nối luôn. Không hợp ở đây bao gồm việc khác nhau về Protocol Name hoặc Protocol Version Numbers. Nếu server đã parse message CONNECT rồi mới phát hiện ra có một trường nào đó không hợp lệ, nó nên gửi lại message CONNACK chứa nội dung mã có nội dung "Kết nối bị từ chối: phiên bản protocol không được chấp nhận" trước khi hủy kết nối này.</p>
+<p>Server sẽ gửi message CONNACK để trả lời message CONNECT đến từ Client.</p>
+<p>Nếu server không nhận được mesage CONNET từ client trong một khoang thời gian đủ dài sau khi thiết lập kết nối TCP/IP, thì server nên đóng kết nối đó lại.</p>
+<p>Nếu client không nhận được một message CONNACK từ server trong một khoảng thời gian nhất định, thì client cũng nên đóng kết nối đó lại, và bắt đầu lại session bằng một socket mới đến server rồi tiếp tục gửi yêu cầu kết nối bằng gói CONNECT.</p>
+<p>Trong cả 2 trường hợp trên, thời gian chờ để nhận được message CONNECT và CONNACK phụ thuộc vào ứng dụng và môi trường kết nối.</p>
+<p>Nếu một client kết nối bằng một Client ID đang được kết nối với Server rồi, thì Client "già hơn" (trước đó) phải bị ngắt bắt buộc bởi server trước khi thực hiện luồng CONNECT với Client mới .</p>
+<p>Nếu client gửi một message CONNECT không hợp lệ, server nên đóng kết nối luôn. Không hợp lệ ở đây bao gồm trường hợp khác nhau về tên giao thức (giá trị trường Tên giao thức) và số phiên bản giao thức. Nếu server đã đọc đủ để biết message CONNECT  không hợp lệ rồi, thì nó nên gửi lại message CONNACK chứa nội dung mã trả về là "Kết nối bị từ chối: phiên bản protocol không được chấp nhận" trước khi hủy kết nối này.</p>
 
 <h2 id="connack">3.2. CONNACK - Acknowledge connection request</h2>
-<p>Message CONNACK được gửi bởi server như để trả lời một yêu cầu a <a href="#connect">CONNECT</a> từ client.</p>
+<p>Message CONNACK được gửi bởi server như để trả lời một yêu cầu kết nối <a href="#connect">CONNECT</a> từ client.</p>
 
-<h3>Phần header cố định</h3>
+<h3>Header cố định</h3>
 <p>Có định dạng như bảng dưới đây.</p>
 
 <table class="bits">
@@ -1604,11 +1602,11 @@ Payload của message CONNECT chưa một hoặc nhiều xâu UTF-8 dựa trên 
 	<tbody>
 		<tr>
 			<td>byte 1</td>
-			<td colspan="4" align="center">Message type (2)</td>
-			<td align="center">DUP flag</td>
-			<td colspan="2" align="center">QoS flags</td>
+			<td colspan="4" align="center">Loại message (2)</td>
+			<td align="center">Cờ lặp DUP</td>
+			<td colspan="2" align="center">Cờ QoS</td>
 
-			<td align="center">RETAIN</td>
+			<td align="center">Cờ báo giữ lại RETAIN</td>
 		</tr>
 		<tr>
 			<td></td>
@@ -1625,7 +1623,7 @@ Payload của message CONNECT chưa một hoặc nhiều xâu UTF-8 dựa trên 
 
 		<tr>
 			<td>byte 2</td>
-			<td colspan="8" align="center">Remaining Length (2)</td>
+			<td colspan="8" align="center">Độ dài còn lại (2)</td>
 		</tr>
 		<tr>
 			<td></td>
@@ -1645,7 +1643,7 @@ Payload của message CONNECT chưa một hoặc nhiều xâu UTF-8 dựa trên 
 <p>Các cờ DUP, QoS and RETAIN không được sử dụng trong message CONNACK.</p>
 
 
-<h3>Phần header thay đổi</h3>
+<h3>Header thay đổi</h3>
 
 <p>Định dạng được chỉ ra ở bảng dưới đây.</p>
 
@@ -1653,7 +1651,7 @@ Payload của message CONNECT chưa một hoặc nhiều xâu UTF-8 dựa trên 
 	<thead>
 		<tr>
 			<th></th>
-			<th>Description</th>
+			<th>Miêu tả</th>
 			<th align="center">7</th>
 			<th align="center">6</th>
 			<th align="center">5</th>
@@ -1668,11 +1666,11 @@ Payload của message CONNECT chưa một hoặc nhiều xâu UTF-8 dựa trên 
 	</thead>
 	<tbody>
 		<tr>
-			<td colspan="10">Topic Name Compression Response</td>
+			<td colspan="10">Trả về dạng nén của tên Topic</td>
 		</tr>
 		<tr>
 			<td>byte 1</td>
-			<td>Reserved values. Not used.</td>
+			<td>Giá trị chưa được sử dụng.</td>
 
 			<td align="center">x</td>
 			<td align="center">x</td>
@@ -1685,12 +1683,12 @@ Payload của message CONNECT chưa một hoặc nhiều xâu UTF-8 dựa trên 
 			<td align="center">x</td>
 		</tr>
 		<tr>
-			<td colspan="10">Connect Return Code</td>
+			<td colspan="10">Mã trả về cho kết nối</td>
 		</tr>
 		<tr>
 
 			<td>byte 2</td>
-			<td>Return Code</td>
+			<td>Mã trả về</td>
 			<td></td>
 			<td></td>
 			<td></td>
@@ -1707,10 +1705,10 @@ Payload của message CONNECT chưa một hoặc nhiều xâu UTF-8 dựa trên 
 <table>
 	<thead>
 		<tr>
-			<td>Enumeration</td>
+			<td>Thứ tự</td>
 
 			<td>HEX</td>
-			<td>Meaning</td>
+			<td>Ý nghĩa</td>
 		</tr>
 	</thead>
 	<tbody>
@@ -1764,11 +1762,11 @@ Payload của message CONNECT chưa một hoặc nhiều xâu UTF-8 dựa trên 
 
 
 <h2 id="publish">3.3. PUBLISH - Message Publish</h2>
-<p>Một message PUBLISH được gửi từ một client đến server để phân tán chúng đến các subscriber cần chúng. Mỗi message luôn gắn liền với một  topic name (cũng được hiểu là Subject hoặc Channel).
-Topic là có dạng không gian phân cấp, nó định nghĩa ra một cách phân loại nguồn thông tin để cho các subscribers có thể subscribe nếu muốn.Một message được published đến một topic nào đó sẽ được phân phát đến các subscriber quan tâm đến topic đó  .</p>
-<p>Nếu 1 client subscribe một hoặc nhiều topic, thì mọi message được published đến những topic đó được gửi bởi server đến client như là một message PUBLISH.</p>
+<p>Một message PUBLISH được gửi từ một Client đến server, rồi server phân phát chúng đến các subscriber cần chúng. Mỗi message luôn gắn liền với một tên topic (cũng được hiểu là Chủ đề (Subject) hoặc Kênh (Channel) ).
+Không gian tên topic ở dạng phân cấp, kèm theo một cách định nghĩa để phân loại topic để cho các subscribers có thể subscribe nếu muốn. Một message được published đến một topic nào đó sẽ được phân phát đến các subscriber quan tâm đến topic đó.</p>
+<p>Nếu 1 Client subscribe một hoặc nhiều topic, thì mọi message được published đến những topic đó được gửi bởi server đến client như là một message PUBLISH.</p>
 
-<h3>Fixed header</h3>
+<h3>Header cố định</h3>
 
 <p>Bảng dưới đây chỉ ra định dạng phần header cố định.</p>
 <table class="bits">
@@ -1790,11 +1788,11 @@ Topic là có dạng không gian phân cấp, nó định nghĩa ra một cách 
 	<tbody>
 		<tr>
 			<td>byte 1</td>
-			<td colspan="4" align="center">Message type (3)</td>
-			<td align="center">DUP flag</td>
+			<td colspan="4" align="center">Loại message (3)</td>
+			<td align="center">Cờ lặp DUP</td>
 
-			<td colspan="2" align="center">QoS level</td>
-			<td align="center">RETAIN</td>
+			<td colspan="2" align="center">Mức QoS</td>
+			<td align="center">Cờ báo giữ lại RETAIN</td>
 		</tr>
 		<tr>
 			<td></td>
@@ -1811,45 +1809,45 @@ Topic là có dạng không gian phân cấp, nó định nghĩa ra một cách 
 		</tr>
 		<tr>
 			<td>byte 2</td>
-			<td colspan="8" align="center">Remaining Length</td>
+			<td colspan="8" align="center">Độ dài còn lại</td>
 		</tr>
 	</tbody>
 </table>
 <dl>
 
-	<dt>QoS level</dt>
-	<dd>Set là 1. Xem thêm về <a href="#qos-flag">QoS</a> để biết thêm chi tiết.</dd>
+	<dt>Mức QoS</dt>
+	<dd>Set là 1. Xem <a href="#qos-flag">QoS</a> để biết thêm chi tiết.</dd>
 
 
-	<dt>DUP flag</dt>
+	<dt>Cờ lặp DUP</dt>
 	<dd>Set là  (0). Có nghĩa là message được gửi ở lần đầu tiên . Xem thêm  <a href="#dup-flag">DUP</a> để biết chi tiết.
 	</dd>
 
 
-	<dt>RETAIN flag</dt>
-	<dd><p>Set là zero. Có nghĩa là không giữ lại. Xem thêm <a href="#retain-flag">Retain</a> để biết thêm chi tiết.</p></dd>
+	<dt>Cờ báo giữ lại RETAIN</dt>
+	<dd><p>Set là zero. Có nghĩa là không giữ lại. Xem <a href="#retain-flag">Retain</a> để biết thêm chi tiết.</p></dd>
 
 
-	<dt>Remaining Length field</dt>
-	<dd>Độ dài của phần header thay đổi cộng phần payload. Nó có thể là trường nhiều byte .</dd>
+	<dt>Độ dài còn lại</dt>
+	<dd>Độ dài của phần header thay đổi cộng phần payload. Nó có thể là trường nhiều byte.</dd>
 
 </dl>
 
 
-<h3>Variable header</h3>
+<h3>Header thay đổi</h3>
 <p>Phần header có độ dài thay đổi được chứa các thành phần sau:</p>
 <dl>
 
-	<dt>Topic name</dt>
-	<dd>Một xâu UTF.
-   <p>Nó không chứa <a href="#appendix-a">kí tự đại diện trong topic</a> .</p>
-   <p>Khi nhận được yêu cầu subscribe từ client thì topic đó của thể chứa kí tự đại diện, 
-   Chuỗi này hoàn toàn được xác định bởi publisher chưa không phải là topic mà client đã subcribe.</p>
+	<dt>Tên Topic</dt>
+	<dd>Là một chuỗi UTF.
+   <p>Nó không chứa <a href="#appendix-a">kí tự đại diện sử dụng trong tên topic</a> .</p>
+   <p>Có một điểm cần chú ý ở đây, khi nhận được yêu cầu subscribe từ Client thì tên topic có thể chứa kí tự đại diện, 
+   còn khi được gửi từ publisher thì tên topic phải được xác định cụ thể chứ không giống như được sử dụng khi subscribe.</p>
    </dd>
 
 
 	<dt>Message ID</dt>
-	<dd>Được sử dụng cho các messsage có QoS là 1 hoặc 2. Xem <a href="#msg-id">Message identifiers</a> để biết thêm chi tiết.
+	<dd>Được sử dụng chủ yếu cho các messsage có QoS là 1 hoặc 2. Xem <a href="#msg-id">Định danh message</a> để biết thêm chi tiết.
 	</dd>
 
 </dl>
@@ -1857,18 +1855,18 @@ Topic là có dạng không gian phân cấp, nó định nghĩa ra một cách 
 <table>
 	<thead>
 		<tr>
-			<td>Field</td>
-			<td>Value</td>
+			<td>Trường</td>
+			<td>Giá trị</td>
 		</tr>
 
 	</thead>
 	<tbody>
 		<tr>
-			<td>Topic Name:</td>
+			<td>Tên topic:</td>
 			<td>"a/b"</td>
 		</tr>
 		<tr>
-			<td>QoS level</td>
+			<td>Mức QoS</td>
 
 			<td>1</td>
 		</tr>
@@ -1879,12 +1877,12 @@ Topic là có dạng không gian phân cấp, nó định nghĩa ra một cách 
 	</tbody>
 
 </table>
-<p>Định dạng của phần header thay đổi trong trường hợp này được chỉ ra dưới bảng sau:.</p>
+<p>Định dạng của phần header thay đổi trong trường hợp này được chỉ ra dưới bảng sau:</p>
 <table class="bits">
 	<thead>
 		<tr>
 			<th></th>
-			<th>Description</th>
+			<th>Mô tả</th>
 			<th align="center">7</th>
 			<th align="center">6</th>
 
@@ -1899,12 +1897,12 @@ Topic là có dạng không gian phân cấp, nó định nghĩa ra một cách 
 	</thead>
 	<tbody>
 		<tr>
-			<td colspan="10" align="center">Topic Name</td>
+			<td colspan="10" align="center">Tên topic</td>
 		</tr>
 		<tr>
 			<td>byte 1</td>
 
-			<td>Length MSB (0)</td>
+			<td>Byte giá trị cao của độ dài MSB (0)</td>
 			<td align="center">0</td>
 			<td align="center">0</td>
 			<td align="center">0</td>
@@ -1917,7 +1915,7 @@ Topic là có dạng không gian phân cấp, nó định nghĩa ra một cách 
 		</tr>
 		<tr>
 			<td>byte 2</td>
-			<td>Length LSB (3)</td>
+			<td>Byte giá trị thấp của độ dài LSB (3)</td>
 
 			<td align="center">0</td>
 			<td align="center">0</td>
@@ -1972,11 +1970,11 @@ Topic là có dạng không gian phân cấp, nó định nghĩa ra một cách 
 		</tr>
 
 		<tr>
-			<td colspan="10" align="center">Message Identifier</td>
+			<td colspan="10" align="center">Định danh message</td>
 		</tr>
 		<tr>
 			<td>byte 6</td>
-			<td>Message ID MSB (0)</td>
+			<td>Byte giá trị cao của Message ID MSB (0)</td>
 			<td align="center">0</td>
 
 			<td align="center">0</td>
@@ -1990,7 +1988,7 @@ Topic là có dạng không gian phân cấp, nó định nghĩa ra một cách 
 		</tr>
 		<tr>
 			<td>byte 7</td>
-			<td>Message ID LSB (10)</td>
+			<td>Byte giá trị thấp của Message ID LSB (10)</td>
 			<td align="center">0</td>
 			<td align="center">0</td>
 
@@ -2006,15 +2004,15 @@ Topic là có dạng không gian phân cấp, nó định nghĩa ra một cách 
 </table>
 
 <h3>Payload</h3>
-<p>Chưa phần dữ liệu cho việc publishing. Nội dung và định dạng của dữ liệu là do ứng dụng quy định. Trường Remaining Length field trong phần độ dài cố định sẽ bao gồm cả phần độ dài thay đổi và phần payload. Như vậy,
+<p>Chứa phần dữ liệu cho việc publishing. Nội dung và định dạng của dữ liệu là do ứng dụng quy định. Trường Độ dài còn lại trong phần header cố định sẽ bao gồm cả phần độ dài thay đổi và phần payload. Như vậy,
 hoàn toàn hợp lệ khi một message PUBLISH chứa độ dài payload là 0.</p>
 <h3>Response</h3>
-<p>Response cho PUBLISH message phụ thuộc vào level của QoS. Bảng dưới đây sẽ chỉ ra chi tiết.</p>
+<p>Response cho PUBLISH message phụ thuộc vào mức QoS. Bảng dưới đây sẽ chỉ ra chi tiết.</p>
 <table>
 	<thead>
 
 		<tr>
-			<td>QoS Level</td>
+			<td>Mức QoS</td>
 			<td>Giá trị trả về mong muốn</td>
 		</tr>
 	</thead>
@@ -2022,7 +2020,7 @@ hoàn toàn hợp lệ khi một message PUBLISH chứa độ dài payload là 0
 		<tr>
 			<td>QoS&nbsp;0</td>
 
-			<td>None</td>
+			<td>Không gì hết</td>
 		</tr>
 		<tr>
 			<td>QoS&nbsp;1</td>
@@ -2036,8 +2034,8 @@ hoàn toàn hợp lệ khi một message PUBLISH chứa độ dài payload là 0
 	</tbody>
 </table>
 
-<h3>Actions</h3>
-<p>Các  message PUBLISH được gửi từ Publisher đến server, hoặc là từ Server đến Subsciber. Việc tiếp thu khi nó nhận được messsage phụ thuộc vào QoS level của message:</p>
+<h3>Các thực hiện liên quan</h3>
+<p>Các message PUBLISH được gửi từ Publisher đến server, hoặc là từ Server đến Subsciber. Việc tiếp messsage thế nào phụ thuộc vào mức QoS của message:</p>
 
 <dl>
 
@@ -3858,8 +3856,8 @@ và nó có nghĩa là "Vâng, tôi vẫn sống đây". </p>
 <p>Không có phần header thay đổi.</p>
 </div>
 <div id="flows-section">
-<h1 id="flows">4. Flows</h1>
-<h2 id="qos-flows">4.1. Quality of Service levels and flows</h2>
+<h1 id="flows">4. Các luồng đặc trưng</h1>
+<h2 id="qos-flows">4.1. Chi tiết về các mức QoS</h2>
 <p>MQTT phân phối các message dựa trên mức độ tin cậy được định nghĩa là
 Quality of Service (QoS). Các level được định nghĩa như sau:</p>
 
